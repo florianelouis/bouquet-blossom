@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'home.dart';
 
 void main() {
   runApp(const MainApp());
@@ -9,12 +10,14 @@ class MainApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const MaterialApp(
-      home: Scaffold(
-        body: Center(
-          child: Text('Bouquet Blossom'),
-        ),
+
+    return MaterialApp(
+      debugShowCheckedModeBanner: false,
+      title: 'Bouquet Blossom',
+      theme: ThemeData(
+        useMaterial3: true,
       ),
+      home: const Home(),
     );
   }
 }
