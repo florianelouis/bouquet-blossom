@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'home.dart';
 
 void main() {
@@ -16,6 +17,7 @@ class MainApp extends StatelessWidget {
       title: 'Bouquet Blossom',
       theme: ThemeData(
         useMaterial3: true,
+        textTheme: GoogleFonts.manropeTextTheme(),
       ),
       home: const Home(),
     );
