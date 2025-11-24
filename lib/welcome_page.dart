@@ -1,6 +1,6 @@
 import 'package:bouquetblossom/constants/app_colors.dart';
 import 'package:flutter/material.dart';
-import 'screen/assets/home.dart';
+import 'package:bouquetblossom/main_page.dart';
 
 class WelcomePage extends StatelessWidget {
   const WelcomePage({super.key});
@@ -32,7 +32,7 @@ class WelcomePage extends StatelessWidget {
                   // Rediriger vers la page définie dans lib/screen/assets/home.dart
                   Navigator.pushReplacement(
                     context,
-                    MaterialPageRoute(builder: (context) => const AssetsHome()),
+                    MaterialPageRoute(builder: (context) => const MainPage()),
                   );
                 },
                 style: ElevatedButton.styleFrom(

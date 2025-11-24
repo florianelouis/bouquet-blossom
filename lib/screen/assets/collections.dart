@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 
-class AssetsHome extends StatelessWidget {
-  const AssetsHome({super.key});
+class CollectionsPage extends StatelessWidget {
+  const CollectionsPage({super.key});
 
   @override
   Widget build(BuildContext context) {
     return const Center(
-      child: Text('Bienvenue sur la page Home !'),
+      child: Text('Page des collections'),
     );
   }
 }
