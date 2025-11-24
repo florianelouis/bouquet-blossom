@@ -1,8 +1,9 @@
 import 'package:bouquetblossom/constants/app_colors.dart';
 import 'package:flutter/material.dart';
+import 'screen/assets/home.dart';
 
-class Home extends StatelessWidget {
-  const Home({super.key});
+class WelcomePage extends StatelessWidget {
+  const WelcomePage({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -28,7 +29,11 @@ class Home extends StatelessWidget {
               // Bouton "Jouer"
               ElevatedButton(
                 onPressed: () {
-                  // Action à effectuer lors du clic sur le bouton
+                  // Rediriger vers la page définie dans lib/screen/assets/home.dart
+                  Navigator.pushReplacement(
+                    context,
+                    MaterialPageRoute(builder: (context) => const AssetsHome()),
+                  );
                 },
                 style: ElevatedButton.styleFrom(
                   padding: const EdgeInsets.symmetric(horizontal: 40, vertical: 8),
