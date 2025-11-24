@@ -1,3 +1,4 @@
+import 'package:bouquetblossom/constants/app_colors.dart';
 import 'package:flutter/material.dart';
 
 class Home extends StatelessWidget {
@@ -22,25 +23,21 @@ class Home extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               const SizedBox(height: 8),
-              Text(
-                'Bouquet Blossom',
-                style: TextStyle(
-                  fontSize: 48,
-                  fontFamily: 'ChettaVissto',
-                  color: Colors.white,
-                  fontWeight: FontWeight.bold,
+              Image.asset('assets/images/logo.png', width: 450, height: 450),
+              const SizedBox(height: 24),
+              // Bouton "Jouer"
+              ElevatedButton(
+                onPressed: () {
+                  // Action à effectuer lors du clic sur le bouton
+                },
+                style: ElevatedButton.styleFrom(
+                  padding: const EdgeInsets.symmetric(horizontal: 40, vertical: 8),
+                  textStyle: const TextStyle(fontSize: 50, fontFamily: 'ChettaVissto'),
+                  backgroundColor: AppColors.sakuraPink,
+                  foregroundColor: AppColors.whitePink,
+                  side: const BorderSide(color: AppColors.white, width: 2),
                 ),
-                textAlign: TextAlign.center,
-              ),
-              const SizedBox(height: 12),
-              Text(
-                'Lorem ipsum dolor sit amet',
-                style: TextStyle(
-                  fontSize: 20,
-                  color: Colors.white70,
-                  fontWeight: FontWeight.w600,
-                ),
-                textAlign: TextAlign.center,
+                child: const Text('Jouer'),
               ),
             ],
           ),
