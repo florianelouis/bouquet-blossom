@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 
-class PopupNiveau extends StatelessWidget {
-  final String popupTitle;
-  final String popupText;
-  const PopupTuto({
+class PopupLevel extends StatelessWidget {
+  final int levelNumber;
+  final String recompenses;
+  const PopupLevel({
     super.key,
-    required this.popupTitle,
-    required this.popupText,
+    required this.levelNumber,
+    required this.recompenses,
   }); // Comme MainApp provient de StatelessWidget on doit la crée avec le super
 
   
