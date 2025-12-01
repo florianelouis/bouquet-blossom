@@ -5,8 +5,8 @@ class FlowerBloc extends StatelessWidget {
   final String color;
   const FlowerBloc({
     super.key,
-    required this.popupTitle,
-    required this.popupText,
+    required this.srcImg,
+    required this.color,
   }); // Comme MainApp provient de StatelessWidget on doit la crée avec le super
 
   @override
@@ -16,7 +16,7 @@ class FlowerBloc extends StatelessWidget {
         color: const Color(color),                 
         borderRadius: BorderRadius.circular(20)
       ), 
-      child: Img( image:srcImg),
+      child: Img( image:srcImg ),
     );
   }
 }
