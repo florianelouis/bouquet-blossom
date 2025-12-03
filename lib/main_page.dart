@@ -1,6 +1,7 @@
 import 'package:bouquetblossom/constants/app_colors.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter/widgets/popup_tuto.dart';
 
 class MainPage extends StatefulWidget {
   const MainPage({super.key});
@@ -11,6 +12,7 @@ class MainPage extends StatefulWidget {
 
 class _MainPageState extends State<MainPage> {
   int _selectedIndex = 0;
+  bool _isFirstWaterClick = true; // A mettre dans le local storage plus tard
 
   static const List<String> _titles = <String>['Accueil', 'Collections'];
 
@@ -143,8 +145,18 @@ class _MainPageState extends State<MainPage> {
                   Column(
                     children: [
                       ElevatedButton(
-                        onPressed: () {
+                        onPressed: () async {
                           // Action du bouton --> arroser les fleurs du bouquet
+                          
+                          if (_isFirstWaterClick) {
+                            await showDialog(
+                              context: context,
+                              builder: (context) => PopupTuto("Arrosoir", "Les fleurs ont besoin d’eau pour pousser, essaie de les arroser !"), 
+                            );
+                            setState(() {
+                              _isFirstWaterClick = false;
+                            });
+                          }
                         },
                         style: ElevatedButton.styleFrom(
                           padding: const EdgeInsets.symmetric(

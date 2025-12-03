@@ -29,9 +29,9 @@ class PopupLevel extends StatelessWidget {
                 Text("Récompenses"),
                 Row(children: [
                   Text(recompenses[0]),
-                  Image(image:AssetImage(recompenses[1])),
+                  Image.asset(recompenses[1]),
                   Text(recompenses[2]),
-                  Image(image:AssetImage(recompenses[3])),
+                  Image.asset(recompenses[3]),
                 ]),
               ]
             ),
