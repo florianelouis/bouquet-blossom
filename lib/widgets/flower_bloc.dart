@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 
 class FlowerBloc extends StatelessWidget {
   final String srcImg;
-  final String color;
+  final Color color;
   const FlowerBloc({
     super.key,
     required this.srcImg,
@@ -13,10 +13,10 @@ class FlowerBloc extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       decoration: BoxDecoration(
-        color: const Color(color),                 
-        borderRadius: BorderRadius.circular(20)
-      ), 
-      child: Image(image:AssetImage(recompenses[1])),
+        color: color,
+        borderRadius: BorderRadius.circular(20),
+      ),
+      child: Image.asset(srcImg),
     );
   }
 }

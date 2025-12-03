@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:bouquetblossom/constants/app_colors.dart';
 
 class PopupLevel extends StatelessWidget {
   final int levelNumber;
@@ -27,32 +28,24 @@ class PopupLevel extends StatelessWidget {
             child: Column(
               children: [
                 Text("Récompenses"),
-                Row(children: [
-                  Text(recompenses[0]),
-                  Image.asset(recompenses[1]),
-                  Text(recompenses[2]),
-                  Image.asset(recompenses[3]),
-                ]),
-              ]
+                Row(
+                  children: [
+                    Text(recompenses[0]),
+                    Image.asset(recompenses[1]),
+                    Text(recompenses[2]),
+                    Image.asset(recompenses[3]),
+                  ],
+                ),
+              ],
             ),
           ),
           TextButton(
-              // style: ButtonStyle(
-              //   foregroundColor: MaterialStateProperty.all<Color>(Colors.blue),
-              //   overlayColor: MaterialStateProperty.resolveWith<Color?>((
-              //     Set<MaterialState> states,
-              //   ) {
-              //     if (states.contains(MaterialState.hovered))
-              //       return Colors.blue.withOpacity(0.04);
-              //     if (states.contains(MaterialState.focused) ||
-              //         states.contains(MaterialState.pressed))
-              //       return Colors.blue.withOpacity(0.12);
-              //     return null; // Defer to the widget's default.
-              //   }),
-              // ),
-              onPressed: () {},
-              child: Text('Jouer'),
+            style: ElevatedButton.styleFrom(
+              backgroundColor: AppColors.sakuraPink,
             ),
+            onPressed: () {},
+            child: Text('Jouer', style: TextStyle(color: AppColors.white)),
+          ),
         ],
       ),
     );
