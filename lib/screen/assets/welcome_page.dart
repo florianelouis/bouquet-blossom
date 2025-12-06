@@ -1,6 +1,6 @@
 import 'package:bouquetblossom/constants/app_colors.dart';
 import 'package:flutter/material.dart';
-import 'package:bouquetblossom/home_page.dart';
+import 'package:bouquetblossom/screen/assets/home_page.dart';
 
 class WelcomePage extends StatelessWidget {
   const WelcomePage({super.key});

@@ -1,4 +1,6 @@
 import 'package:bouquetblossom/constants/app_colors.dart';
+import 'package:bouquetblossom/widgets/app_bar.dart';
+import 'package:bouquetblossom/widgets/bottom_nav_bar.dart';
 import 'package:bouquetblossom/widgets/buttons_home_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -24,14 +26,9 @@ class _MainPageState extends State<MainPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text(_titles[_selectedIndex]),
-        titleTextStyle: const TextStyle(
-          fontSize: 24,
-          fontWeight: FontWeight.bold,
-        ),
-        toolbarTextStyle: const TextStyle(fontFamily: 'Manrope'),
-        backgroundColor: AppColors.sakuraPink,
+      // Widget séparé pour l'app bar 
+      appBar: CustomAppBar(
+        title: _titles[_selectedIndex],
       ),
       body: Column(
         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -60,19 +57,10 @@ class _MainPageState extends State<MainPage> {
           const ButtonsHomePage(),
         ],
       ),
-      bottomNavigationBar: BottomNavigationBar(
+      // Widget séparé pour la bottom navigation bar
+      bottomNavigationBar: BottomNavBar(
         currentIndex: _selectedIndex,
         onTap: _onItemTapped,
-        backgroundColor: AppColors.sakuraPink,
-        selectedItemColor: AppColors.white,
-        unselectedItemColor: AppColors.white,
-        items: const [
-          BottomNavigationBarItem(icon: Icon(Icons.home), label: 'Accueil'),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.collections),
-            label: 'Collections',
-          ),
-        ],
       ),
     );
   }

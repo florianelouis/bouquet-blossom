@@ -1,4 +1,5 @@
 import 'package:bouquetblossom/constants/app_colors.dart';
+import 'package:bouquetblossom/screen/assets/game.dart';
 import 'package:flutter/material.dart';
 
 class ButtonsHomePage extends StatelessWidget {
@@ -15,6 +16,10 @@ class ButtonsHomePage extends StatelessWidget {
             ElevatedButton(
               onPressed: () {
                 // Action du bouton --> redirection vers la page de jeu
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => const Game()),
+                );
               },
               style: ElevatedButton.styleFrom(
                 padding: const EdgeInsets.symmetric(

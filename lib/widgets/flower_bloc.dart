@@ -16,7 +16,7 @@
 //         color: const Color(color),                 
 //         borderRadius: BorderRadius.circular(20)
 //       ), 
-//       child: Img( image:srcImg ),
+//       child: Image(image:AssetImage(recompenses[1])),
 //     );
 //   }
 // }
