@@ -13,6 +13,7 @@ class MainPage extends StatefulWidget {
 class _MainPageState extends State<MainPage> {
   int _selectedIndex = 0;
   bool _isFirstWaterClick = true; // A mettre dans le local storage plus tard
+  bool _isFirstBouquetClick = true; // A mettre dans le local storage plus tard
 
   static const List<String> _titles = <String>['Accueil', 'Collections'];
 
@@ -99,8 +100,21 @@ class _MainPageState extends State<MainPage> {
                   Column(
                     children: [
                       ElevatedButton(
-                        onPressed: () {
+                        onPressed: () async {
                           // Action du bouton --> ajouter des fleurs au bouquet
+                          if (_isFirstBouquetClick) {
+                            await showDialog(
+                              context: context,
+                              builder: (context) => const PopupTuto(
+                                popupTitle: "Bouquet",
+                                popupText:
+                                    "Tu as récupéré des fleurs dans des niveaux, ajoute les à ton bouquet.",
+                              ),
+                            );
+                            setState(() {
+                              _isFirstBouquetClick = false;
+                            });
+                          }
                         },
                         style: ElevatedButton.styleFrom(
                           padding: const EdgeInsets.symmetric(

@@ -11,51 +11,60 @@ class PopupTuto extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return SizedBox.shrink(
+    return Dialog(
       child: Container(
-        padding: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
-        decoration: BoxDecoration(
-          color: const Color(0xFF3950AE),
-          borderRadius: BorderRadius.circular(20),
-        ),
-        child: Padding(
-          padding: EdgeInsets.all(20),
-          child: Column(
-            children: [
-              Padding(
-                padding: EdgeInsets.only(bottom: 5),
-                child: Text(
-                  popupTitle,
-                  style: TextStyle(
-                    color: Colors.white,
-                    fontSize: 32,
-                    decoration: TextDecoration.none,
-                  ),
+      decoration: BoxDecoration(
+        color: const Color(0xFF3950AE),
+        borderRadius: BorderRadius.circular(20),
+      ),
+      child: Center( 
+        child: SizedBox(
+        width: 362,
+        height: 246,
+        child: Padding(padding: EdgeInsets.all(20),
+        child: Column(
+          children: [
+            Padding(
+              padding: EdgeInsets.only(bottom: 5),
+              child: Text(
+                popupTitle,
+                textAlign: TextAlign.center,
+                style: TextStyle(
+                  color: Colors.white,
+                  fontSize: 28,
+                  decoration: TextDecoration.none,
+                  letterSpacing: 0.5,
                 ),
               ),
+            ),
+        
 
-              Container(
-                decoration: BoxDecoration(
-                  color: const Color(0xFF23357C),
-                  borderRadius: BorderRadius.circular(20),
-                ),
-                child: Padding(
+            Container(
+              decoration: BoxDecoration(
+                color: const Color(0xFF23357C),
+                borderRadius: BorderRadius.circular(20),
+              ),
+              child: 
+                Padding(
                   padding: EdgeInsets.all(15),
                   child: Text(
                     popupText,
+                    textAlign: TextAlign.center,
                     style: TextStyle(
                       color: Colors.white,
-                      fontSize: 24,
+                      fontSize: 20,
                       fontWeight: FontWeight.normal,
                       decoration: TextDecoration.none,
+                      letterSpacing: 0.5,
                     ),
                   ),
                 ),
               ),
-            ],
-          ),
+          ],
         ),
+      
       ),
-    );
+
+    ))));
   }
 }
