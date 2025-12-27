@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:bouquetblossom/widgets/app_bar.dart';
 import 'package:bouquetblossom/widgets/flower_bloc.dart';
-import 'package:audioplayers/audioplayers.dart';
 
 class Game extends StatefulWidget {
   const Game({super.key});
@@ -32,31 +31,12 @@ class _GameState extends State<Game> {
   
   // Blocs en cours de suppression
   Set<String> disappearingBlocs = {};
-  
-  // Lecteur audio pour la musique de fond
-  final AudioPlayer _audioPlayer = AudioPlayer();
 
   @override
   void initState() {
     super.initState();
     // Initialiser la grille avec des fleurs aléatoires
     initializeGrid();
-    // Lancer la musique de fond en boucle
-    _playBackgroundMusic();
-  }
-  
-  // Jouer la musique de fond
-  Future<void> _playBackgroundMusic() async {
-    await _audioPlayer.setReleaseMode(ReleaseMode.loop);
-    await _audioPlayer.play(AssetSource('audio/music.mp3'));
-  }
-  
-  @override
-  void dispose() {
-    // Arrêter et libérer le lecteur audio
-    _audioPlayer.stop();
-    _audioPlayer.dispose();
-    super.dispose();
   }
 
   // Initialiser la grille avec des fleurs aléatoires
