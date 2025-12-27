@@ -2,6 +2,7 @@ import 'package:bouquetblossom/constants/app_colors.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:bouquetblossom/widgets/popup_tuto.dart';
+import 'package:bouquetblossom/screen/assets/game.dart';
 
 class MainPage extends StatefulWidget {
   const MainPage({super.key});
@@ -66,6 +67,10 @@ class _MainPageState extends State<MainPage> {
                   ElevatedButton(
                     onPressed: () {
                       // Action du bouton --> redirection vers la page de jeu
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (context) => const Game()),
+                      );
                     },
                     style: ElevatedButton.styleFrom(
                       padding: const EdgeInsets.symmetric(
@@ -94,6 +99,7 @@ class _MainPageState extends State<MainPage> {
                   ),
                 ],
               ),
+              const SizedBox(height: 16),
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [
