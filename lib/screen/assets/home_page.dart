@@ -3,7 +3,6 @@ import 'package:bouquetblossom/widgets/app_bar.dart';
 import 'package:bouquetblossom/widgets/bottom_nav_bar.dart';
 import 'package:bouquetblossom/widgets/buttons_home_page.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 
 class MainPage extends StatefulWidget {
   const MainPage({super.key});
