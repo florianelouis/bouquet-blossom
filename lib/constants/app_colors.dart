@@ -14,4 +14,11 @@ abstract class AppColors {
   // Couleurs de Texte
   static const Color white = Color(0xFFFFFFFF);
   static const Color black = Color(0xFF000000);
+
+  // Couleurs des Fleurs (pour le jeu)
+  static const Color flowerSakura = Color(0xFFF69AA5);
+  static const Color flowerPoppy = Color(0xFFC44235);
+  static const Color flowerLily = Color(0xFFFBC494);
+  static const Color flowerSunflower = Color(0xFFFFF32B);
+  static const Color flowerHydrangea = Color(0xFF8D5075);
 }
