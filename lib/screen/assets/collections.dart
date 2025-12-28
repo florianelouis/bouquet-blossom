@@ -8,9 +8,8 @@ class CollectionsPage extends StatelessWidget {
     return const Center(
       child: Column(
         children: [
-          Text('Page des collections'),
-          Text('Fleurs'),
           Text('Bouquets'),
+          Text('Fleurs'),
         ],
       ),
     );
