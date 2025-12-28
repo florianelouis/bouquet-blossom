@@ -32,7 +32,7 @@ class _AssetsHomeState extends State<AssetsHome> {
               ),
               child: const Center(
                 child: Text(
-                  'Bouquet de fleurs',
+                  'Bouquet de fleurs en cours',
                   style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
                 ),
               ),
