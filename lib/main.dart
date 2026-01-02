@@ -2,8 +2,16 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:audioplayers/audioplayers.dart';
 import 'screen/assets/welcome_page.dart';
+import 'services/user_data_service.dart';
+import 'services/flowers_service.dart';
 
-void main() {
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  
+  // Initialiser les services
+  await UserDataService().init();
+  await FlowersService().loadFlowers();
+  
   runApp(const MainApp());
 }
 
