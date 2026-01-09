@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:bouquetblossom/constants/app_colors.dart';
+import 'package:bouquetblossom/screen/assets/game.dart';
 
 class PopupLevel extends StatelessWidget {
   final int levelNumber;
@@ -12,7 +13,11 @@ class PopupLevel extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
+    return Dialog(
+      child: SizedBox(
+        width: 362,
+        height: 246,
+        child: Container(
       decoration: BoxDecoration(
         color: const Color(0xFF99B3E7),
         borderRadius: BorderRadius.circular(20),
@@ -43,11 +48,18 @@ class PopupLevel extends StatelessWidget {
             style: ElevatedButton.styleFrom(
               backgroundColor: AppColors.sakuraPink,
             ),
-            onPressed: () {},
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => const Game()),
+              );
+            },
             child: Text('Jouer', style: TextStyle(color: AppColors.white)),
           ),
         ],
       ),
+    )
+    )
     );
   }
 }
