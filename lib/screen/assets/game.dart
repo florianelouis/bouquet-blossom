@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:bouquetblossom/widgets/app_bar.dart';
 import 'package:bouquetblossom/widgets/flower_bloc.dart';
+import 'package:bouquetblossom/widgets/app_bar_level.dart';
 
 class Game extends StatefulWidget {
   const Game({super.key});
@@ -18,6 +19,10 @@ class _GameState extends State<Game> {
 
   // Identifiants uniques pour chaque bloc (pour les animations)
   List<List<UniqueKey>> blocKeys = [];
+
+  
+  // Score du niveau en cours
+  int currentScore = 0;
 
   // Animation en cours
   bool isAnimating = false;
@@ -62,6 +67,7 @@ class _GameState extends State<Game> {
         grid[row][col] = FlowerBloc.randomType();
       }
     }
+    currentScore = 0;
   }
 
   // Gérer le début du déplacement
@@ -220,9 +226,22 @@ class _GameState extends State<Game> {
         for (int c = col + 1; c < gridSize && grid[row][c] == type; c++) {
           countH++;
         }
+        if (countH >= 5) {
+          for (int c = col; c < col + countH; c++) {
+            matches.add('$row,$c');
+            currentScore = currentScore + 500; 
+          }
+        }
+        if (countH >= 4) {
+          for (int c = col; c < col + countH; c++) {
+            matches.add('$row,$c');
+            currentScore = currentScore + 250; 
+          }
+        }
         if (countH >= 3) {
           for (int c = col; c < col + countH; c++) {
             matches.add('$row,$c');
+            currentScore = currentScore + 100; 
           }
         }
 
@@ -231,9 +250,22 @@ class _GameState extends State<Game> {
         for (int r = row + 1; r < gridSize && grid[r][col] == type; r++) {
           countV++;
         }
+        if (countV >= 5) {
+          for (int r = row; r < row + countV; r++) {
+            matches.add('$r,$col');
+            currentScore = currentScore + 500; 
+          }
+        }
+        if (countV >= 4) {
+          for (int r = row; r < row + countV; r++) {
+            matches.add('$r,$col');
+            currentScore = currentScore + 250; 
+          }
+        }
         if (countV >= 3) {
           for (int r = row; r < row + countV; r++) {
             matches.add('$r,$col');
+            currentScore = currentScore + 100; 
           }
         }
       }
@@ -318,7 +350,9 @@ class _GameState extends State<Game> {
   Widget build(BuildContext context) {
     return Scaffold(
       // Widget séparé pour l'app bar
-      appBar: CustomAppBar(title: 'Niveau 1'),
+      appBar: CustomAppBar(
+        title: _titles[_selectedIndex],
+      ),
       body: Container(
         constraints: const BoxConstraints.expand(),
         // Use a background image from assets
@@ -331,50 +365,73 @@ class _GameState extends State<Game> {
         child: Center(
           child: Padding(
             padding: const EdgeInsets.all(16.0),
-            child: AspectRatio(
-              aspectRatio: 1,
-              child: GridView.builder(
-                physics: const NeverScrollableScrollPhysics(),
-                gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                  crossAxisCount: gridSize,
-                  crossAxisSpacing: 4,
-                  mainAxisSpacing: 4,
-                ),
-                itemCount: gridSize * gridSize,
-                itemBuilder: (context, index) {
-                  final row = index ~/ gridSize;
-                  final col = index % gridSize;
-                  final blocKey = '$row,$col';
-                  final isSwapping = swappingBlocs.contains(blocKey);
-                  final isDisappearing = disappearingBlocs.contains(blocKey);
-
-                  return AnimatedScale(
-                    scale: isDisappearing ? 0.0 : (isSwapping ? 0.85 : 1.0),
-                    duration: Duration(milliseconds: isDisappearing ? 300 : 350),
-                    curve: isSwapping ? Curves.elasticOut : Curves.easeInOut,
-                    child: AnimatedOpacity(
-                      opacity: isDisappearing ? 0.0 : (isSwapping ? 0.6 : 1.0),
-                      duration: Duration(milliseconds: isDisappearing ? 300 : 350),
-                      child: AnimatedSwitcher(
-                        duration: const Duration(milliseconds: 300),
-                        switchInCurve: Curves.easeOut,
-                        transitionBuilder: (child, animation) {
-                          return FadeTransition(
-                            opacity: animation,
-                            child: child,
-                          );
-                        },
-                        child: GestureDetector(
-                          key: blocKeys[row][col],
-                          onPanStart: (_) => onDragStart(row, col),
-                          onPanEnd: (details) => onDragEnd(row, col, details),
-                          child: FlowerBloc(type: grid[row][col], onTap: null),
-                        ),
-                      ),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                // Grille de jeu
+                AspectRatio(
+                  aspectRatio: 1,
+                  child: GridView.builder(
+                    physics: const NeverScrollableScrollPhysics(),
+                    gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                      crossAxisCount: gridSize,
+                      crossAxisSpacing: 4,
+                      mainAxisSpacing: 4,
                     ),
-                  );
-                },
-              ),
+                    itemCount: gridSize * gridSize,
+                    itemBuilder: (context, index) {
+                      final row = index ~/ gridSize;
+                      final col = index % gridSize;
+                      final blocKey = '$row,$col';
+                      final isSwapping = swappingBlocs.contains(blocKey);
+                      final isDisappearing = disappearingBlocs.contains(blocKey);
+
+                      return AnimatedScale(
+                        scale: isDisappearing ? 0.0 : (isSwapping ? 0.85 : 1.0),
+                        duration: Duration(milliseconds: isDisappearing ? 300 : 350),
+                        curve: isSwapping ? Curves.elasticOut : Curves.easeInOut,
+                        child: AnimatedOpacity(
+                          opacity: isDisappearing ? 0.0 : (isSwapping ? 0.6 : 1.0),
+                          duration: Duration(milliseconds: isDisappearing ? 300 : 350),
+                          child: AnimatedSwitcher(
+                            duration: const Duration(milliseconds: 300),
+                            switchInCurve: Curves.easeOut,
+                            transitionBuilder: (child, animation) {
+                              return FadeTransition(
+                                opacity: animation,
+                                child: child,
+                              );
+                            },
+                            child: GestureDetector(
+                              key: blocKeys[row][col],
+                              onPanStart: (_) => onDragStart(row, col),
+                              onPanEnd: (details) => onDragEnd(row, col, details),
+                              child: FlowerBloc(type: grid[row][col], onTap: null),
+                            ),
+                          ),
+                        ),
+                      );
+                    },
+                  ),
+                ),
+                const SizedBox(height: 50),
+                Text(
+                  '$currentScore', 
+                  style: const TextStyle(
+                    fontSize: 48,
+                    fontWeight: FontWeight.bold,
+                    fontFamily: 'ChettaVissto',
+                    color: Colors.white,
+                    shadows: [
+                      Shadow(
+                        blurRadius: 10.0,
+                        color: Colors.black,
+                        offset: Offset(2.0, 2.0),
+                      ),
+                    ],
+                  ),
+                ),
+              ],
             ),
           ),
         ),
