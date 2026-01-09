@@ -1,0 +1,34 @@
+{
+    "flowers": [
+        {
+            "id": "sakura",
+            "name": "Sakura",
+            "imagePath": "assets/images/sakura.webp",
+            "blockColor": "#F69AA5"
+        },
+        {
+            "id": "hydrangea",
+            "name": "Hortensia",
+            "imagePath": "assets/images/hydrangea.webp",
+            "blockColor": "#8D5075"
+        },
+        {
+            "id": "lily",
+            "name": "Lys",
+            "imagePath": "assets/images/lily.webp",
+            "blockColor": "#FBC494"
+        },
+        {
+            "id": "poppy",
+            "name": "Coquelicot",
+            "imagePath": "assets/images/poppy.webp",
+            "blockColor": "#C44235"
+        },
+        {
+            "id": "sunflower",
+            "name": "Tournesol",
+            "imagePath": "assets/images/sunflower.webp",
+            "blockColor": "#FFF3B2"
+        }
+    ]
+}

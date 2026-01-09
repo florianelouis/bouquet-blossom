@@ -1,6 +1,7 @@
 import 'package:bouquetblossom/constants/app_colors.dart';
 import 'package:bouquetblossom/screen/assets/game.dart';
 import 'package:flutter/material.dart';
+import 'package:bouquetblossom/widgets/popup_level.dart';
 
 class ButtonsHomePage extends StatelessWidget {
   const ButtonsHomePage({super.key});
@@ -15,10 +16,11 @@ class ButtonsHomePage extends StatelessWidget {
           children: [
             ElevatedButton(
               onPressed: () {
-                // Action du bouton --> redirection vers la page de jeu
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => const Game()),
+                // TODO afficher cette pop up avant le lancement du jeu (qui se fait dans la pop up directement /widgets/popup_level.dart)
+                showDialog(
+                    context: context,
+                    barrierDismissible: true,
+                    builder: (BuildContext context) => PopupLevel( levelNumber: 1, recompenses: ["1", "/assets/images/lily.webp", "100", "/assets/images/petal.webp"]),
                 );
               },
               style: ElevatedButton.styleFrom(
@@ -53,7 +55,7 @@ class ButtonsHomePage extends StatelessWidget {
             // Bouton Fleurs
             ElevatedButton(
               onPressed: () {
-                // Action du bouton --> ajouter des fleurs au bouquet
+                // TODO Action du bouton --> ajouter des fleurs au bouquet
               },
               style: ElevatedButton.styleFrom(
                 padding: const EdgeInsets.symmetric(
@@ -91,7 +93,7 @@ class ButtonsHomePage extends StatelessWidget {
             // Bouton Arrosoir
             ElevatedButton(
               onPressed: () {
-                // Action du bouton --> arroser les fleurs du bouquet
+                // TODO Action du bouton --> arroser les fleurs du bouquet // donne 100 pétales 
               },
               style: ElevatedButton.styleFrom(
                 padding: const EdgeInsets.symmetric(
