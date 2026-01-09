@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:bouquetblossom/widgets/app_bar.dart';
 import 'package:bouquetblossom/widgets/flower_bloc.dart';
-import 'package:bouquetblossom/widgets/app_bar_level.dart';
+import 'package:bouquetblossom/widgets/app_bar.dart';
 
 class Game extends StatefulWidget {
   const Game({super.key});
@@ -20,7 +20,6 @@ class _GameState extends State<Game> {
   // Identifiants uniques pour chaque bloc (pour les animations)
   List<List<UniqueKey>> blocKeys = [];
 
-  
   // Score du niveau en cours
   int currentScore = 0;
 
@@ -30,10 +29,10 @@ class _GameState extends State<Game> {
   // Position de départ du drag
   int? dragStartRow;
   int? dragStartCol;
-  
+
   // Blocs en cours de swap
   Set<String> swappingBlocs = {};
-  
+
   // Blocs en cours de suppression
   Set<String> disappearingBlocs = {};
 
@@ -55,7 +54,7 @@ class _GameState extends State<Game> {
       gridSize,
       (row) => List.generate(gridSize, (col) => UniqueKey()),
     );
-    
+
     // Supprimer les matches initiaux jusqu'à ce qu'il n'y en ait plus --> match = 3 mêmes fleurs ou plus alignées
     while (findAllMatches().isNotEmpty) {
       final matches = findAllMatches();
@@ -123,7 +122,7 @@ class _GameState extends State<Game> {
   // Échanger deux blocs
   void swapBlocs(int row1, int col1, int row2, int col2) {
     isAnimating = true;
-    
+
     // Marquer les blocs comme étant en swap
     setState(() {
       swappingBlocs.add('$row1,$col1');
@@ -149,14 +148,14 @@ class _GameState extends State<Game> {
       setState(() {
         swappingBlocs.clear();
       });
-      
+
       if (!hasMatchAt(row1, col1) && !hasMatchAt(row2, col2)) {
         // Pas de match - annuler l'échange
         setState(() {
           swappingBlocs.add('$row1,$col1');
           swappingBlocs.add('$row2,$col2');
         });
-        
+
         Future.delayed(const Duration(milliseconds: 50), () {
           setState(() {
             final temp = grid[row1][col1];
@@ -229,20 +228,20 @@ class _GameState extends State<Game> {
         if (countH >= 5) {
           for (int c = col; c < col + countH; c++) {
             matches.add('$row,$c');
-            currentScore = currentScore + 500; 
           }
+          currentScore = currentScore + 500;
         }
         if (countH >= 4) {
           for (int c = col; c < col + countH; c++) {
             matches.add('$row,$c');
-            currentScore = currentScore + 250; 
           }
+          currentScore = currentScore + 250;
         }
         if (countH >= 3) {
           for (int c = col; c < col + countH; c++) {
             matches.add('$row,$c');
-            currentScore = currentScore + 100; 
           }
+          currentScore = currentScore + 100;
         }
 
         // Vérifier verticalement
@@ -253,20 +252,20 @@ class _GameState extends State<Game> {
         if (countV >= 5) {
           for (int r = row; r < row + countV; r++) {
             matches.add('$r,$col');
-            currentScore = currentScore + 500; 
           }
+          currentScore = currentScore + 500;
         }
         if (countV >= 4) {
           for (int r = row; r < row + countV; r++) {
             matches.add('$r,$col');
-            currentScore = currentScore + 250; 
           }
+          currentScore = currentScore + 250;
         }
         if (countV >= 3) {
           for (int r = row; r < row + countV; r++) {
             matches.add('$r,$col');
-            currentScore = currentScore + 100; 
           }
+          currentScore = currentScore + 100;
         }
       }
     }
@@ -350,9 +349,7 @@ class _GameState extends State<Game> {
   Widget build(BuildContext context) {
     return Scaffold(
       // Widget séparé pour l'app bar
-      appBar: CustomAppBar(
-        title: _titles[_selectedIndex],
-      ),
+      appBar: CustomAppBar(title: "Niveau 1"),
       body: Container(
         constraints: const BoxConstraints.expand(),
         // Use a background image from assets
@@ -384,15 +381,25 @@ class _GameState extends State<Game> {
                       final col = index % gridSize;
                       final blocKey = '$row,$col';
                       final isSwapping = swappingBlocs.contains(blocKey);
-                      final isDisappearing = disappearingBlocs.contains(blocKey);
+                      final isDisappearing = disappearingBlocs.contains(
+                        blocKey,
+                      );
 
                       return AnimatedScale(
                         scale: isDisappearing ? 0.0 : (isSwapping ? 0.85 : 1.0),
-                        duration: Duration(milliseconds: isDisappearing ? 300 : 350),
-                        curve: isSwapping ? Curves.elasticOut : Curves.easeInOut,
+                        duration: Duration(
+                          milliseconds: isDisappearing ? 300 : 350,
+                        ),
+                        curve: isSwapping
+                            ? Curves.elasticOut
+                            : Curves.easeInOut,
                         child: AnimatedOpacity(
-                          opacity: isDisappearing ? 0.0 : (isSwapping ? 0.6 : 1.0),
-                          duration: Duration(milliseconds: isDisappearing ? 300 : 350),
+                          opacity: isDisappearing
+                              ? 0.0
+                              : (isSwapping ? 0.6 : 1.0),
+                          duration: Duration(
+                            milliseconds: isDisappearing ? 300 : 350,
+                          ),
                           child: AnimatedSwitcher(
                             duration: const Duration(milliseconds: 300),
                             switchInCurve: Curves.easeOut,
@@ -405,8 +412,12 @@ class _GameState extends State<Game> {
                             child: GestureDetector(
                               key: blocKeys[row][col],
                               onPanStart: (_) => onDragStart(row, col),
-                              onPanEnd: (details) => onDragEnd(row, col, details),
-                              child: FlowerBloc(type: grid[row][col], onTap: null),
+                              onPanEnd: (details) =>
+                                  onDragEnd(row, col, details),
+                              child: FlowerBloc(
+                                type: grid[row][col],
+                                onTap: null,
+                              ),
                             ),
                           ),
                         ),
@@ -416,7 +427,7 @@ class _GameState extends State<Game> {
                 ),
                 const SizedBox(height: 50),
                 Text(
-                  '$currentScore', 
+                  '$currentScore',
                   style: const TextStyle(
                     fontSize: 48,
                     fontWeight: FontWeight.bold,

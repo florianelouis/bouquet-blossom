@@ -1,10 +1,10 @@
 import 'package:bouquetblossom/constants/app_colors.dart';
 import 'package:flutter/material.dart';
 
-class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
+class CustomAppBarLevel extends StatelessWidget implements PreferredSizeWidget {
   final String title;
 
-  const CustomAppBar({
+  const CustomAppBarLevel({
     super.key,
     required this.title,
   });
