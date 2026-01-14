@@ -30,10 +30,11 @@ class _AssetsHomeState extends State<AssetsHome> {
                 border: Border.all(color: AppColors.sakuraPink, width: 2),
                 borderRadius: BorderRadius.circular(8),
               ),
-              child: const Center(
-                child: Text(
-                  'Bouquet de fleurs en cours',
-                  style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+              // Bouquet
+              child: Center(
+                child: Image.asset(
+                  'assets/images/stem1.webp',
+                  fit: BoxFit.contain,
                 ),
               ),
             ),
