@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:bouquetblossom/widgets/app_bar.dart';
 import 'package:bouquetblossom/widgets/flower_bloc.dart';
 import 'package:bouquetblossom/widgets/app_bar_level.dart';
 
@@ -350,8 +349,8 @@ class _GameState extends State<Game> {
   Widget build(BuildContext context) {
     return Scaffold(
       // Widget séparé pour l'app bar
-      appBar: CustomAppBar(
-        title: _titles[_selectedIndex],
+      appBar: AppBarLevel(
+        title: "Niveau",
       ),
       body: Container(
         constraints: const BoxConstraints.expand(),
