@@ -13,8 +13,8 @@ class _GameState extends State<Game> {
   // Taille de la grille
   final int gridSize = 8;
 
-  // Liste pour stocker les types de fleurs dans la grille
-  List<List<FlowerType>> grid = [];
+  // Liste pour stocker les IDs de fleurs dans la grille
+  List<List<String>> grid = [];
 
   // Identifiants uniques pour chaque bloc (pour les animations)
   List<List<UniqueKey>> blocKeys = [];
@@ -25,10 +25,10 @@ class _GameState extends State<Game> {
   // Position de départ du drag
   int? dragStartRow;
   int? dragStartCol;
-  
+
   // Blocs en cours de swap
   Set<String> swappingBlocs = {};
-  
+
   // Blocs en cours de suppression
   Set<String> disappearingBlocs = {};
 
@@ -44,13 +44,13 @@ class _GameState extends State<Game> {
     // Générer la grille initiale
     grid = List.generate(
       gridSize,
-      (row) => List.generate(gridSize, (col) => FlowerBloc.randomType()),
+      (row) => List.generate(gridSize, (col) => FlowerBloc.randomFlowerId()),
     );
     blocKeys = List.generate(
       gridSize,
       (row) => List.generate(gridSize, (col) => UniqueKey()),
     );
-    
+
     // Supprimer les matches initiaux jusqu'à ce qu'il n'y en ait plus --> match = 3 mêmes fleurs ou plus alignées
     while (findAllMatches().isNotEmpty) {
       final matches = findAllMatches();
@@ -59,7 +59,7 @@ class _GameState extends State<Game> {
         final row = int.parse(parts[0]);
         final col = int.parse(parts[1]);
         // Remplacer les matches par de nouvelles fleurs
-        grid[row][col] = FlowerBloc.randomType();
+        grid[row][col] = FlowerBloc.randomFlowerId();
       }
     }
   }
@@ -117,7 +117,7 @@ class _GameState extends State<Game> {
   // Échanger deux blocs
   void swapBlocs(int row1, int col1, int row2, int col2) {
     isAnimating = true;
-    
+
     // Marquer les blocs comme étant en swap
     setState(() {
       swappingBlocs.add('$row1,$col1');
@@ -143,14 +143,14 @@ class _GameState extends State<Game> {
       setState(() {
         swappingBlocs.clear();
       });
-      
+
       if (!hasMatchAt(row1, col1) && !hasMatchAt(row2, col2)) {
         // Pas de match - annuler l'échange
         setState(() {
           swappingBlocs.add('$row1,$col1');
           swappingBlocs.add('$row2,$col2');
         });
-        
+
         Future.delayed(const Duration(milliseconds: 50), () {
           setState(() {
             final temp = grid[row1][col1];
@@ -177,16 +177,16 @@ class _GameState extends State<Game> {
 
   // Vérifier s'il y a un match à une position donnée
   bool hasMatchAt(int row, int col) {
-    final type = grid[row][col];
+    final flowerId = grid[row][col];
 
     // Vérifier horizontalement
     int countHorizontal = 1;
     // Compter à gauche
-    for (int c = col - 1; c >= 0 && grid[row][c] == type; c--) {
+    for (int c = col - 1; c >= 0 && grid[row][c] == flowerId; c--) {
       countHorizontal++;
     }
     // Compter à droite
-    for (int c = col + 1; c < gridSize && grid[row][c] == type; c++) {
+    for (int c = col + 1; c < gridSize && grid[row][c] == flowerId; c++) {
       countHorizontal++;
     }
     if (countHorizontal >= 3) return true;
@@ -194,11 +194,11 @@ class _GameState extends State<Game> {
     // Vérifier verticalement
     int countVertical = 1;
     // Compter en haut
-    for (int r = row - 1; r >= 0 && grid[r][col] == type; r--) {
+    for (int r = row - 1; r >= 0 && grid[r][col] == flowerId; r--) {
       countVertical++;
     }
     // Compter en bas
-    for (int r = row + 1; r < gridSize && grid[r][col] == type; r++) {
+    for (int r = row + 1; r < gridSize && grid[r][col] == flowerId; r++) {
       countVertical++;
     }
     if (countVertical >= 3) return true;
@@ -213,11 +213,11 @@ class _GameState extends State<Game> {
     // Vérifier toutes les positions
     for (int row = 0; row < gridSize; row++) {
       for (int col = 0; col < gridSize; col++) {
-        final type = grid[row][col];
+        final flowerId = grid[row][col];
 
         // Vérifier horizontalement
         int countH = 1;
-        for (int c = col + 1; c < gridSize && grid[row][c] == type; c++) {
+        for (int c = col + 1; c < gridSize && grid[row][c] == flowerId; c++) {
           countH++;
         }
         if (countH >= 3) {
@@ -228,7 +228,7 @@ class _GameState extends State<Game> {
 
         // Vérifier verticalement
         int countV = 1;
-        for (int r = row + 1; r < gridSize && grid[r][col] == type; r++) {
+        for (int r = row + 1; r < gridSize && grid[r][col] == flowerId; r++) {
           countV++;
         }
         if (countV >= 3) {
@@ -260,7 +260,7 @@ class _GameState extends State<Game> {
     Future.delayed(const Duration(milliseconds: 300), () {
       setState(() {
         // Supprimer les matches (marquer comme vides)
-        List<List<FlowerType?>> tempGrid = List.generate(
+        List<List<String?>> tempGrid = List.generate(
           gridSize,
           (row) => List.generate(gridSize, (col) => grid[row][col]),
         );
@@ -277,7 +277,7 @@ class _GameState extends State<Game> {
         // Faire tomber les blocs
         for (int col = 0; col < gridSize; col++) {
           // Collecter tous les blocs non-null et leurs clés de la colonne (de bas en haut)
-          List<FlowerType> nonEmptyBlocs = [];
+          List<String> nonEmptyBlocs = [];
           List<UniqueKey> nonEmptyKeys = [];
 
           for (int row = gridSize - 1; row >= 0; row--) {
@@ -296,7 +296,7 @@ class _GameState extends State<Game> {
               blocIndex++;
             } else {
               // Générer de nouveaux blocs en haut
-              grid[row][col] = FlowerBloc.randomType();
+              grid[row][col] = FlowerBloc.randomFlowerId();
               blocKeys[row][col] = UniqueKey();
             }
           }
@@ -350,11 +350,15 @@ class _GameState extends State<Game> {
 
                   return AnimatedScale(
                     scale: isDisappearing ? 0.0 : (isSwapping ? 0.85 : 1.0),
-                    duration: Duration(milliseconds: isDisappearing ? 300 : 350),
+                    duration: Duration(
+                      milliseconds: isDisappearing ? 300 : 350,
+                    ),
                     curve: isSwapping ? Curves.elasticOut : Curves.easeInOut,
                     child: AnimatedOpacity(
                       opacity: isDisappearing ? 0.0 : (isSwapping ? 0.6 : 1.0),
-                      duration: Duration(milliseconds: isDisappearing ? 300 : 350),
+                      duration: Duration(
+                        milliseconds: isDisappearing ? 300 : 350,
+                      ),
                       child: AnimatedSwitcher(
                         duration: const Duration(milliseconds: 300),
                         switchInCurve: Curves.easeOut,
@@ -368,7 +372,10 @@ class _GameState extends State<Game> {
                           key: blocKeys[row][col],
                           onPanStart: (_) => onDragStart(row, col),
                           onPanEnd: (details) => onDragEnd(row, col, details),
-                          child: FlowerBloc(type: grid[row][col], onTap: null),
+                          child: FlowerBloc(
+                            flowerId: grid[row][col],
+                            onTap: null,
+                          ),
                         ),
                       ),
                     ),
