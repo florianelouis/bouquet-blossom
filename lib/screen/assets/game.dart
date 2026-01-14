@@ -384,33 +384,47 @@ class _GameState extends State<Game> {
                         blocKey,
                       );
 
-                  return AnimatedScale(
-                    scale: isDisappearing ? 0.0 : (isSwapping ? 0.85 : 1.0),
-                    duration: Duration(milliseconds: isDisappearing ? 300 : 350),
-                    curve: isSwapping ? Curves.elasticOut : Curves.easeInOut,
-                    child: AnimatedOpacity(
-                      opacity: isDisappearing ? 0.0 : (isSwapping ? 0.6 : 1.0),
-                      duration: Duration(milliseconds: isDisappearing ? 300 : 350),
-                      child: AnimatedSwitcher(
-                        duration: const Duration(milliseconds: 300),
-                        switchInCurve: Curves.easeOut,
-                        transitionBuilder: (child, animation) {
-                          return FadeTransition(
-                            opacity: animation,
-                            child: child,
-                          );
-                        },
-                        child: GestureDetector(
-                          key: blocKeys[row][col],
-                          onPanStart: (_) => onDragStart(row, col),
-                          onPanEnd: (details) => onDragEnd(row, col, details),
-                          child: FlowerBloc(flowerId: grid[row][col], onTap: null),
+                      return AnimatedScale(
+                        scale: isDisappearing ? 0.0 : (isSwapping ? 0.85 : 1.0),
+                        duration: Duration(
+                          milliseconds: isDisappearing ? 300 : 350,
                         ),
-                      ),
-                    ),
-                  );
-                },
-              ),
+                        curve: isSwapping
+                            ? Curves.elasticOut
+                            : Curves.easeInOut,
+                        child: AnimatedOpacity(
+                          opacity: isDisappearing
+                              ? 0.0
+                              : (isSwapping ? 0.6 : 1.0),
+                          duration: Duration(
+                            milliseconds: isDisappearing ? 300 : 350,
+                          ),
+                          child: AnimatedSwitcher(
+                            duration: const Duration(milliseconds: 300),
+                            switchInCurve: Curves.easeOut,
+                            transitionBuilder: (child, animation) {
+                              return FadeTransition(
+                                opacity: animation,
+                                child: child,
+                              );
+                            },
+                            child: GestureDetector(
+                              key: blocKeys[row][col],
+                              onPanStart: (_) => onDragStart(row, col),
+                              onPanEnd: (details) =>
+                                  onDragEnd(row, col, details),
+                              child: FlowerBloc(
+                                flowerId: grid[row][col],
+                                onTap: null,
+                              ),
+                            ),
+                          ),
+                        ),
+                      );
+                    },
+                  ),
+                ),
+              ],
             ),
           ),
         ),
