@@ -47,7 +47,6 @@ class _AssetsHomeState extends State<AssetsHome> {
               children: [
                 ElevatedButton(
                   onPressed: () async {
-                    if (_isLevelClick) {
                       await showDialog(
                         context: context,
                         builder: (BuildContext context) => const PopupLevel(
@@ -63,8 +62,7 @@ class _AssetsHomeState extends State<AssetsHome> {
                       setState(() {
                         _isLevelClick = false;
                       });
-                    }
-                  },
+                    },
                   style: ElevatedButton.styleFrom(
                     padding: const EdgeInsets.symmetric(
                       horizontal: 40,

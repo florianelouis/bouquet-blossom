@@ -16,7 +16,7 @@ class PopupLevel extends StatelessWidget {
   Widget build(BuildContext context) {
     return Dialog(
       child: SizedBox(
-        width: 400,
+        width: 350,
         height: 250,
         child: Container(
           decoration: BoxDecoration(
@@ -25,8 +25,8 @@ class PopupLevel extends StatelessWidget {
           ),
           child: Center(
             child: SizedBox(
-              width: 400,
-              height: 200,
+              width: 300,
+              height: 250,
               child: Padding(
                 padding: EdgeInsets.all(20),
                 child: Column(
@@ -58,61 +58,66 @@ class PopupLevel extends StatelessWidget {
                               textAlign: TextAlign.center,
                               style: TextStyle(
                                 color: Colors.white,
-                                fontSize: 16,
+                                fontSize: 18,
                                 fontWeight: FontWeight.normal,
                                 decoration: TextDecoration.none,
                                 letterSpacing: 0.5,
                               ),
                             ),
-                            Row(
-                              children: [
-                                Text(
-                                  recompenses[0],
-                                  textAlign: TextAlign.center,
-                                  style: TextStyle(
-                                    color: Colors.white,
-                                    fontSize: 20,
-                                    fontWeight: FontWeight.bold,
-                                    decoration: TextDecoration.none,
+                            Row( 
+                              mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  Text(
+                                    recompenses[0],
+                                    textAlign: TextAlign.center,
+                                    style: TextStyle(
+                                      color: Colors.white,
+                                      fontSize: 20,
+                                      fontWeight: FontWeight.bold,
+                                      decoration: TextDecoration.none,
+                                    ),
                                   ),
-                                ),
-                                SizedBox(
-                                  height: 40, // Ajustez selon vos besoins
-                                  width: 40,
-                                  child: Image.asset(
-                                    recompenses[1],
-                                    fit: BoxFit.contain,
+                                  Padding(padding: EdgeInsets.only(right: 10)),
+                                  SizedBox(
+                                    height: 30, 
+                                    width: 30,
+                                    child: Image.asset(
+                                      recompenses[1],
+                                      fit: BoxFit.contain,
+                                    ),
                                   ),
-                                ),
-                                Text(
-                                  recompenses[2],
-                                  textAlign: TextAlign.center,
-                                  style: TextStyle(
-                                    color: Colors.white,
-                                    fontSize: 20,
-                                    fontWeight: FontWeight.bold,
-                                    decoration: TextDecoration.none,
+                                  Padding(padding: EdgeInsets.only(right: 10)),
+                                  Text(
+                                    recompenses[2],
+                                    textAlign: TextAlign.center,
+                                    style: TextStyle(
+                                      color: Colors.white,
+                                      fontSize: 20,
+                                      fontWeight: FontWeight.bold,
+                                      decoration: TextDecoration.none,
+                                    ),
                                   ),
-                                ),
-                                SizedBox(
-                                  height: 40, // Ajustez selon vos besoins
-                                  width: 40,
-                                  child: Image.asset(
-                                    recompenses[3],
-                                    fit: BoxFit.contain,
+                                  Padding(padding: EdgeInsets.only(right: 10)),
+                                  SizedBox(
+                                    height: 25, 
+                                    width: 25,
+                                    child: Image.asset(
+                                      recompenses[3],
+                                      fit: BoxFit.contain,
+                                    ),
                                   ),
+                                ],
                                 ),
-                              ],
-                            ),
                           ],
                         ),
                       ),
                     ),
                     Padding(
-                      padding: EdgeInsets.only(top: 5),
+                      padding: EdgeInsets.only(top: 15),
                       child: ElevatedButton(
                         style: ElevatedButton.styleFrom(
                           backgroundColor: AppColors.sakuraPink,
+                          side: const BorderSide(color: AppColors.white, width: 2),
                         ),
                         onPressed: () {
                           Navigator.push(
@@ -124,7 +129,10 @@ class PopupLevel extends StatelessWidget {
                         },
                         child: Text(
                           'Jouer',
-                          style: TextStyle(color: AppColors.white),
+                          style: TextStyle(
+                            color: AppColors.white,
+                            fontSize: 24,
+                          ),
                         ),
                       ),
                     ),
