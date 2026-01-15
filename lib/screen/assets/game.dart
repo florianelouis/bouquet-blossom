@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:bouquetblossom/widgets/app_bar.dart';
 import 'package:bouquetblossom/widgets/flower_bloc.dart';
+
+import 'package:bouquetblossom/widgets/app_bar.dart';
 
 class Game extends StatefulWidget {
   const Game({super.key});
