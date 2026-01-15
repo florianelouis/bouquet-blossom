@@ -1,0 +1,36 @@
+{
+    "bouquets": [
+        {
+            "id": 1,
+            "stems": 4,
+            "images": {
+                "1": "assets/images/bouquet1-1.webp",
+                "2": "assets/images/bouquet1-2.webp",
+                "3": "assets/images/bouquet1-3.webp",
+                "4": "assets/images/bouquet1-4.webp"
+            },
+            "flowers": {
+                "1": "sakura",
+                "2": "hydrangea",
+                "3": "sakura",
+                "4": "hydrangea"
+            }
+        },
+        {
+            "id": 2,
+            "stems": 4,
+            "images": {
+                "1": "assets/images/bouquet2-1.webp",
+                "2": "assets/images/bouquet2-2.webp",
+                "3": "assets/images/bouquet2-3.webp",
+                "4": "assets/images/bouquet2-4.webp"
+            },
+            "flowers": {
+                "1": "sunflower",
+                "2": "lily",
+                "3": "sunflower",
+                "4": "lily"
+            }
+        }
+    ]
+}
