@@ -19,6 +19,71 @@
                     "sunflower": 5
                 }
             }
+        },
+        {
+            "id": 3,
+            "bouquet_id": 1,
+            "moves": 30,
+            "objective": {
+                "points": 20000,
+                "flowers": {
+                    "sakura": 8,
+                    "hydrangea": 8
+                }
+            }
+        },
+        {
+            "id": 4,
+            "bouquet_id": 1,
+            "moves": 25,
+            "objective": {
+                "points": 25000,
+                "flowers": {
+                    "poppy": 7,
+                    "lily": 7
+                }
+            }
+        },
+        {
+            "id": 5,
+            "bouquet_id": 2,
+            "moves": -1,
+            "objective": {
+                "points": 30000,
+                "flowers": {
+                    "sunflower": 10,
+                    "lily": 10
+                }
+            }
+        },
+        {
+            "id": 6,
+            "bouquet_id": 2,
+            "moves": 30,
+            "objective": {
+                "points": 35000
+            }
+        },
+        {
+            "id": 7,
+            "bouquet_id": 2,
+            "moves": 20,
+            "objective": {
+                "points": 40000,
+                "flowers": {
+                    "sakura": 10,
+                    "hydrangea": 10,
+                    "poppy": 10
+                }
+            }
+        },
+        {
+            "id": 8,
+            "bouquet_id": 2,
+            "moves": 25,
+            "objective": {
+                "points": 45000
+            }
         }
     ]
 }
