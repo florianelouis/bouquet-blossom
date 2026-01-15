@@ -30,10 +30,10 @@ class _AssetsHomeState extends State<AssetsHome> {
                 border: Border.all(color: AppColors.sakuraPink, width: 2),
                 borderRadius: BorderRadius.circular(8),
               ),
-              // Bouquet
+              // TODO: État actuel du bouquet à afficher ici 
               child: Center(
                 child: Image.asset(
-                  'assets/images/stem1.webp',
+                  'assets/images/bouquet1-4.webp',
                   fit: BoxFit.contain,
                 ),
               ),
