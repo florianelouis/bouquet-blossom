@@ -1,0 +1,24 @@
+{
+    "levels": [
+        {
+            "id": 1,
+            "bouquet_id": 1,
+            "moves": -1,
+            "objective": {
+                "points": 10000
+            }
+        },
+        {
+            "id": 2,
+            "bouquet_id": 1,
+            "moves": 20,
+            "objective": {
+                "points": 15000,
+                "flowers": {
+                    "lily": 5,
+                    "sunflower": 5
+                }
+            }
+        }
+    ]
+}
