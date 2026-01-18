@@ -18,7 +18,7 @@ class FlowerCard extends StatelessWidget {
       decoration: BoxDecoration(
         color: AppColors.white,
         borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: AppColors.matchaGreen, width: 2),
+        border: Border.all(color: AppColors.sakuraPink, width: 3),
         boxShadow: [
           BoxShadow(
             color: Colors.black.withValues(alpha: 0.1),

@@ -4,10 +4,10 @@
             "id": 1,
             "stems": 4,
             "images": {
-                "1": "assets/images/bouquet1-1.webp",
-                "2": "assets/images/bouquet1-2.webp",
-                "3": "assets/images/bouquet1-3.webp",
-                "4": "assets/images/bouquet1-4.webp"
+                "1": "assets/images/bouquets/bouquet1-1.webp",
+                "2": "assets/images/bouquets/bouquet1-2.webp",
+                "3": "assets/images/bouquets/bouquet1-3.webp",
+                "4": "assets/images/bouquets/bouquet1-4.webp"
             },
             "flowers": {
                 "1": "sakura",
@@ -20,10 +20,10 @@
             "id": 2,
             "stems": 4,
             "images": {
-                "1": "assets/images/bouquet2-1.webp",
-                "2": "assets/images/bouquet2-2.webp",
-                "3": "assets/images/bouquet2-3.webp",
-                "4": "assets/images/bouquet2-4.webp"
+                "1": "assets/images/bouquets/bouquet2-1.webp",
+                "2": "assets/images/bouquets/bouquet2-2.webp",
+                "3": "assets/images/bouquets/bouquet2-3.webp",
+                "4": "assets/images/bouquets/bouquet2-4.webp"
             },
             "flowers": {
                 "1": "sunflower",

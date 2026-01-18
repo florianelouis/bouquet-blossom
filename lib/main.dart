@@ -4,6 +4,7 @@ import 'package:audioplayers/audioplayers.dart';
 import 'screen/assets/welcome_page.dart';
 import 'services/user_data_service.dart';
 import 'services/flowers_service.dart';
+import 'services/bouquets_service.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -13,6 +14,7 @@ void main() async {
     await Future.wait([
       UserDataService().init(),
       FlowersService().loadFlowers(),
+      BouquetsService().loadBouquets(),
     ]);
   } catch (e) {
     debugPrint('Error initializing services: $e');
