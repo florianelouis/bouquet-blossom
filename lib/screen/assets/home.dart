@@ -34,8 +34,13 @@ class _AssetsHomeState extends State<AssetsHome> {
               // TODO: État actuel du bouquet à afficher ici 
               child: Center(
                 child: Image.asset(
-                  'assets/images/bouquet1-4.webp',
+                  'assets/images/bouquets/bouquet1-4.webp',
                   fit: BoxFit.contain,
+                  cacheWidth: 600,
+                  errorBuilder: (context, error, stackTrace) {
+                    debugPrint('Error loading bouquet: $error');
+                    return const Icon(Icons.local_florist, size: 100, color: AppColors.sakuraPink);
+                  },
                 ),
               ),
             ),
@@ -135,6 +140,7 @@ class _AssetsHomeState extends State<AssetsHome> {
                             'assets/images/sakura.webp',
                             width: 50,
                             height: 50,
+                            cacheWidth: 100,
                           ),
                           const Text(
                             '5',
@@ -192,6 +198,7 @@ class _AssetsHomeState extends State<AssetsHome> {
                             'assets/images/water.webp',
                             width: 80,
                             height: 80,
+                            cacheWidth: 160,
                           ),
                           const SizedBox(width: 8),
                         ],
