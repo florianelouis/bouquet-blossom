@@ -425,6 +425,24 @@ class _GameState extends State<Game> {
                     },
                   ),
                 ),
+                const SizedBox(height: 20),
+                // Affichage du score
+                Text(
+                  '$currentScore',
+                  style: const TextStyle(
+                    fontSize: 48,
+                    fontFamily: 'ChettaVissto',
+                    fontWeight: FontWeight.bold,
+                    color: Colors.white,
+                    shadows: [
+                      Shadow(
+                        offset: Offset(2, 2),
+                        blurRadius: 4,
+                        color: Colors.black54,
+                      ),
+                    ],
+                  ),
+                ),
               ],
             ),
           ),
