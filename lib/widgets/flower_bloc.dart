@@ -69,7 +69,14 @@ class FlowerBloc extends StatelessWidget {
           ),
           child: Padding(
             padding: const EdgeInsets.all(8.0),
-            child: Image.asset(flower.imagePath, fit: BoxFit.contain),
+            child: Image.asset(
+              flower.imagePath, 
+              fit: BoxFit.contain,
+              errorBuilder: (context, error, stackTrace) {
+                debugPrint('Error loading flower image: $error');
+                return const Icon(Icons.local_florist, size: 40, color: Colors.white);
+              },
+            ),
           ),
         ),
       ),

@@ -47,8 +47,11 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
                         height: 20,
                         width: 20,
                         child: Image.asset(
-                          // TODO affichage petal
-                          "/assets/images/petal.webp"
+                          'assets/images/petal.webp',
+                          errorBuilder: (context, error, stackTrace) {
+                            debugPrint('Error loading petal: $error');
+                            return const Icon(Icons.star, size: 20, color: Colors.black);
+                          },
                         ),
                       ),
                     ],

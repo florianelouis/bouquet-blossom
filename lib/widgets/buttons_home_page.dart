@@ -76,6 +76,10 @@ class ButtonsHomePage extends StatelessWidget {
                     'assets/images/sakura.webp',
                     width: 30,
                     height: 30,
+                    errorBuilder: (context, error, stackTrace) {
+                      debugPrint('Error loading sakura: $error');
+                      return const Icon(Icons.local_florist, size: 30, color: Colors.white);
+                    },
                   ),
                   const SizedBox(width: 8),
                   const Text(
@@ -114,6 +118,10 @@ class ButtonsHomePage extends StatelessWidget {
                     'assets/images/water.webp',
                     width: 40,
                     height: 40,
+                    errorBuilder: (context, error, stackTrace) {
+                      debugPrint('Error loading water: $error');
+                      return const Icon(Icons.water_drop, size: 40, color: Colors.white);
+                    },
                   ),
                 ],
               ),
