@@ -6,12 +6,16 @@ class Flower {
   final String name;
   final String imagePath;
   final Color blockColor;
+  final String description;
+  final String blossomSeason;
 
   Flower({
     required this.id,
     required this.name,
     required this.imagePath,
     required this.blockColor,
+    required this.description,
+    required this.blossomSeason,
   });
 
   // Créer une fleur depuis un fichier JSON
@@ -21,6 +25,8 @@ class Flower {
       name: json['name'],
       imagePath: json['imagePath'],
       blockColor: _parseColor(json['blockColor']),
+      description: json['description'] ?? '',
+      blossomSeason: json['blossomSeason'] ?? '',
     );
   }
 
@@ -31,6 +37,8 @@ class Flower {
       'name': name,
       'imagePath': imagePath,
       'blockColor': '#${blockColor.value.toRadixString(16).substring(2).toUpperCase()}',
+      'description': description,
+      'blossomSeason': blossomSeason,
     };
   }
 
