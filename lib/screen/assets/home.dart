@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:bouquetblossom/constants/app_colors.dart';
 import 'package:bouquetblossom/widgets/popup_tuto.dart';
-import 'package:bouquetblossom/screen/assets/game.dart';
+import 'package:bouquetblossom/widgets/popup_level.dart';
 
 class AssetsHome extends StatefulWidget {
   const AssetsHome({super.key});
@@ -13,6 +13,7 @@ class AssetsHome extends StatefulWidget {
 class _AssetsHomeState extends State<AssetsHome> {
   bool _isFirstWaterClick = true;
   bool _isFirstBouquetClick = true;
+  bool _isLevelClick = true;
 
   @override
   Widget build(BuildContext context) {
@@ -46,12 +47,23 @@ class _AssetsHomeState extends State<AssetsHome> {
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
                 ElevatedButton(
-                  onPressed: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(builder: (context) => const Game()),
-                    );
-                  },
+                  onPressed: () async {
+                      await showDialog(
+                        context: context,
+                        builder: (BuildContext context) => const PopupLevel(
+                          levelNumber: 1,
+                          recompenses: [
+                            "1",
+                            "assets/images/lily.webp",
+                            "100",
+                            "assets/images/petal.webp",
+                          ],
+                        ),
+                      );
+                      setState(() {
+                        _isLevelClick = false;
+                      });
+                    },
                   style: ElevatedButton.styleFrom(
                     padding: const EdgeInsets.symmetric(
                       horizontal: 40,
