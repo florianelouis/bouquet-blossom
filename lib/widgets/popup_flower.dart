@@ -111,7 +111,7 @@ class FlowerPopup extends StatelessWidget {
                           const SizedBox(height: 8),
                           Container(
                             padding: const EdgeInsets.symmetric(
-                              horizontal: 10,
+                              horizontal: 16,
                               vertical: 8,
                             ),
                             decoration: BoxDecoration(
