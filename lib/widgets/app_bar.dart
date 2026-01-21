@@ -47,7 +47,6 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
                         height: 20,
                         width: 20,
                         child: Image.asset(
-                          // TODO affichage petal
                           "/assets/images/petal.webp"
                         ),
                       ),
