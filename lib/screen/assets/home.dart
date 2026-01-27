@@ -13,7 +13,7 @@ class AssetsHome extends StatefulWidget {
 class _AssetsHomeState extends State<AssetsHome> {
   bool _isFirstWaterClick = true;
   bool _isFirstBouquetClick = true;
-  bool _isLevelClick = true;
+  // bool _isLevelClick = true;
 
   @override
   Widget build(BuildContext context) {
@@ -31,10 +31,16 @@ class _AssetsHomeState extends State<AssetsHome> {
                 border: Border.all(color: AppColors.sakuraPink, width: 2),
                 borderRadius: BorderRadius.circular(8),
               ),
-              child: const Center(
-                child: Text(
-                  'Bouquet de fleurs en cours',
-                  style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+              // TODO: État actuel du bouquet à afficher ici 
+              child: Center(
+                child: Image.asset(
+                  'assets/images/bouquets/bouquet1-4.webp',
+                  fit: BoxFit.contain,
+                  cacheWidth: 600,
+                  errorBuilder: (context, error, stackTrace) {
+                    debugPrint('Error loading bouquet: $error');
+                    return const Icon(Icons.local_florist, size: 100, color: AppColors.sakuraPink);
+                  },
                 ),
               ),
             ),
@@ -60,7 +66,7 @@ class _AssetsHomeState extends State<AssetsHome> {
                         ),
                       );
                       setState(() {
-                        _isLevelClick = false;
+                        //_isLevelClick = false;
                       });
                     },
                   style: ElevatedButton.styleFrom(
@@ -134,6 +140,11 @@ class _AssetsHomeState extends State<AssetsHome> {
                             'assets/images/sakura.webp',
                             width: 50,
                             height: 50,
+                            cacheWidth: 100,
+                            errorBuilder: (context, error, stackTrace) {
+                              debugPrint('Error loading sakura: $error');
+                              return const Icon(Icons.local_florist, size: 50, color: AppColors.sakuraPink);
+                            },
                           ),
                           const Text(
                             '5',
@@ -191,6 +202,11 @@ class _AssetsHomeState extends State<AssetsHome> {
                             'assets/images/water.webp',
                             width: 80,
                             height: 80,
+                            cacheWidth: 160,
+                            errorBuilder: (context, error, stackTrace) {
+                              debugPrint('Error loading water: $error');
+                              return const Icon(Icons.water_drop, size: 80, color: AppColors.lightSakuraPink);
+                            },
                           ),
                           const SizedBox(width: 8),
                         ],

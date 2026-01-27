@@ -84,6 +84,10 @@ class PopupLevel extends StatelessWidget {
                                     child: Image.asset(
                                       recompenses[1],
                                       fit: BoxFit.contain,
+                                      errorBuilder: (context, error, stackTrace) {
+                                        debugPrint('Error loading reward image: $error');
+                                        return const Icon(Icons.local_florist, size: 30, color: Colors.white);
+                                      },
                                     ),
                                   ),
                                   Padding(padding: EdgeInsets.only(right: 10)),
@@ -104,6 +108,10 @@ class PopupLevel extends StatelessWidget {
                                     child: Image.asset(
                                       recompenses[3],
                                       fit: BoxFit.contain,
+                                      errorBuilder: (context, error, stackTrace) {
+                                        debugPrint('Error loading reward image: $error');
+                                        return const Icon(Icons.star, size: 25, color: Colors.white);
+                                      },
                                     ),
                                   ),
                                 ],

@@ -4,13 +4,21 @@ import 'package:audioplayers/audioplayers.dart';
 import 'screen/assets/welcome_page.dart';
 import 'services/user_data_service.dart';
 import 'services/flowers_service.dart';
+import 'services/bouquets_service.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   
-  // Initialiser les services
-  await UserDataService().init();
-  await FlowersService().loadFlowers();
+  // Initialiser les services en parallèle
+  try {
+    await Future.wait([
+      UserDataService().init(),
+      FlowersService().loadFlowers(),
+      BouquetsService().loadBouquets(),
+    ]);
+  } catch (e) {
+    debugPrint('Error initializing services: $e');
+  }
   
   runApp(const MainApp());
 }
@@ -32,8 +40,12 @@ class _MainAppState extends State<MainApp> {
   }
 
   Future<void> _playBackgroundMusic() async {
-    await _audioPlayer.setReleaseMode(ReleaseMode.loop);
-    await _audioPlayer.play(AssetSource('audio/music.mp3'));
+    try {
+      await _audioPlayer.setReleaseMode(ReleaseMode.loop);
+      await _audioPlayer.play(AssetSource('audio/music.mp3'));
+    } catch (e) {
+      debugPrint('Error playing background music: $e');
+    }
   }
 
   @override

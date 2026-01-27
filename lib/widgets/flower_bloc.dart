@@ -1,80 +1,62 @@
 import 'package:flutter/material.dart';
-import 'package:bouquetblossom/constants/app_colors.dart';
+import 'package:bouquetblossom/models/flower.dart';
+import 'package:bouquetblossom/services/flowers_service.dart';
 import 'dart:math';
 
-// Types de fleurs disponibles dans le jeu
-enum FlowerType {
-  sakura,
-  poppy,
-  lily,
-  sunflower,
-  hydrangea,
-}
-
 class FlowerBloc extends StatelessWidget {
-  final FlowerType type;
+  final String flowerId;
   final VoidCallback? onTap;
-  
-  const FlowerBloc({
-    super.key,
-    required this.type,
-    this.onTap,
-  });
 
-  // Méthode pour obtenir la couleur selon le type de fleur
-  Color getColor() {
-    switch (type) {
-      case FlowerType.sakura:
-        return AppColors.flowerSakura;
-      case FlowerType.poppy:
-        return AppColors.flowerPoppy;
-      case FlowerType.lily:
-        return AppColors.flowerLily;
-      case FlowerType.sunflower:
-        return AppColors.flowerSunflower;
-      case FlowerType.hydrangea:
-        return AppColors.flowerHydrangea;
+  const FlowerBloc({super.key, required this.flowerId, this.onTap});
+
+  // Récupérer les données de la fleur depuis le service
+  Flower? _getFlower() {
+    try {
+      return FlowersService().getFlowerById(flowerId);
+    } catch (e) {
+      print('Erreur lors de la récupération de la fleur $flowerId: $e');
+      return null;
     }
   }
 
-  // Méthode pour obtenir le chemin de l'image selon le type de fleur
-  String getImagePath() {
-    switch (type) {
-      case FlowerType.sakura:
-        return 'assets/images/sakura.webp';
-      case FlowerType.poppy:
-        return 'assets/images/poppy.webp';
-      case FlowerType.lily:
-        return 'assets/images/lily.webp';
-      case FlowerType.sunflower:
-        return 'assets/images/sunflower.webp';
-      case FlowerType.hydrangea:
-        return 'assets/images/hydrangea.webp';
-    }
-  }
+  // Méthode statique pour générer un ID de fleur aléatoire
+  static String randomFlowerId() {
+    final flowers = FlowersService().getAllFlowers();
+    if (flowers.isEmpty) return 'sakura'; // Valeur par défaut
 
-  // Méthode statique pour générer un type de fleur aléatoire
-  static FlowerType randomType() {
     final random = Random();
-    return FlowerType.values[random.nextInt(FlowerType.values.length)];
+    return flowers[random.nextInt(flowers.length)].id;
   }
 
   @override
   Widget build(BuildContext context) {
+    final flower = _getFlower();
+
+    // Si la fleur n'existe pas, afficher un placeholder
+    if (flower == null) {
+      return Container(
+        decoration: BoxDecoration(
+          color: Colors.grey[300],
+          borderRadius: BorderRadius.circular(15),
+          border: Border.all(color: Colors.white, width: 2),
+        ),
+        child: const Center(
+          child: Icon(Icons.error_outline, color: Colors.grey),
+        ),
+      );
+    }
+
     return GestureDetector(
       onTap: onTap,
       child: TweenAnimationBuilder<double>(
         duration: const Duration(milliseconds: 200),
         tween: Tween(begin: 0.0, end: 1.0),
         builder: (context, scale, child) {
-          return Transform.scale(
-            scale: scale,
-            child: child,
-          );
+          return Transform.scale(scale: scale, child: child);
         },
         child: Container(
           decoration: BoxDecoration(
-            color: getColor(),
+            color: flower.blockColor,
             borderRadius: BorderRadius.circular(15),
             border: Border.all(color: Colors.white, width: 2),
             boxShadow: [
@@ -88,8 +70,12 @@ class FlowerBloc extends StatelessWidget {
           child: Padding(
             padding: const EdgeInsets.all(8.0),
             child: Image.asset(
-              getImagePath(),
+              flower.imagePath, 
               fit: BoxFit.contain,
+              errorBuilder: (context, error, stackTrace) {
+                debugPrint('Error loading flower image: $error');
+                return const Icon(Icons.local_florist, size: 40, color: Colors.white);
+              },
             ),
           ),
         ),

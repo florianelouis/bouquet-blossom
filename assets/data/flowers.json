@@ -4,31 +4,41 @@
             "id": "sakura",
             "name": "Sakura",
             "imagePath": "assets/images/sakura.webp",
-            "blockColor": "#F69AA5"
+            "blockColor": "#F69AA5",
+            "description": "La fleur de cerisier, ou sakura, est un symbole emblématique du Japon. Elle représente la beauté éphémère de la vie, car ses fleurs délicates ne durent que quelques semaines au printemps. Les sakura sont célébrées lors de festivals appelés hanami, où les gens se rassemblent pour admirer leur floraison spectaculaire.",
+            "blossomSeason": "Printemps"
         },
         {
             "id": "hydrangea",
             "name": "Hortensia",
             "imagePath": "assets/images/hydrangea.webp",
-            "blockColor": "#8D5075"
+            "blockColor": "#8D5075",
+            "description": "L'hortensia est une plante ornementale appréciée pour ses grandes inflorescences colorées. Elle symbolise la gratitude et la beauté. Les hortensias fleurissent généralement en été, apportant une touche de couleur aux jardins et aux bouquets.",
+            "blossomSeason": "Été"
         },
         {
             "id": "lily",
             "name": "Lys",
             "imagePath": "assets/images/lily.webp",
-            "blockColor": "#FBC494"
+            "blockColor": "#FBC494",
+            "description": "Le lys est une fleur élégante et majestueuse, souvent associée à la pureté et à la noblesse. Il existe de nombreuses variétés de lys, chacune avec ses propres couleurs et formes. Les lys sont souvent utilisés dans les arrangements floraux pour des occasions spéciales.",
+            "blossomSeason": "Printemps"
         },
         {
             "id": "poppy",
             "name": "Coquelicot",
             "imagePath": "assets/images/poppy.webp",
-            "blockColor": "#C44235"
+            "blockColor": "#C44235",
+            "description": "Le coquelicot est une fleur sauvage aux pétales rouges vifs, souvent associée à la mémoire et au souvenir. Il pousse dans les champs et les prairies, apportant une touche de couleur éclatante au paysage.",
+            "blossomSeason": "Printemps"
         },
         {
             "id": "sunflower",
             "name": "Tournesol",
             "imagePath": "assets/images/sunflower.webp",
-            "blockColor": "#FFF3B2"
+            "blockColor": "#FFF3B2",
+            "description": "Le tournesol est une fleur joyeuse et lumineuse, connue pour sa grande taille et ses pétales jaunes éclatants. Il symbolise la positivité et l'énergie solaire. Les tournesols suivent le mouvement du soleil, ce qui en fait une fleur fascinante à observer.",
+            "blossomSeason": "Été"
         }
     ]
 }

@@ -1,5 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:bouquetblossom/constants/app_colors.dart';
+import 'package:bouquetblossom/services/flowers_service.dart';
+import 'package:bouquetblossom/services/bouquets_service.dart';
+import 'package:bouquetblossom/widgets/flower_card.dart';
+import 'package:bouquetblossom/widgets/bouquet_card.dart';
+import 'package:bouquetblossom/models/flower.dart';
+import 'package:bouquetblossom/models/bouquet.dart';
 
 class CollectionsPage extends StatefulWidget {
   const CollectionsPage({super.key});
@@ -63,6 +69,8 @@ class _CollectionsPageState extends State<CollectionsPage>
 
   // Collection des bouquets
   Widget _bouquetsCollection() {
+    final List<Bouquet> allBouquets = BouquetsService().getAllBouquets();
+
     return Padding(
       padding: const EdgeInsets.all(16.0),
       child: GridView.builder(
@@ -72,16 +80,22 @@ class _CollectionsPageState extends State<CollectionsPage>
           mainAxisSpacing: 16,
           childAspectRatio: 0.75,
         ),
-        itemCount: 4,
+        itemCount: allBouquets.length,
         itemBuilder: (context, index) {
-          return _bouquetCard();
+          return BouquetCard(
+            bouquet: allBouquets[index],
+            isUnlocked: true, // TODO: Vérifier si débloqué avec UserDataService
+          );
         },
       ),
     );
   }
 
   // Collection des fleurs
+  // Collection des fleurs
   Widget _flowersCollection() {
+    final List<Flower> allFlowers = FlowersService().getAllFlowers();
+
     return Padding(
       padding: const EdgeInsets.all(16.0),
       child: GridView.builder(
@@ -91,88 +105,13 @@ class _CollectionsPageState extends State<CollectionsPage>
           mainAxisSpacing: 16,
           childAspectRatio: 0.75,
         ),
-        itemCount: 4,
+        itemCount: allFlowers.length,
         itemBuilder: (context, index) {
-          return _flowerCard();
+          return FlowerCard(
+            flower: allFlowers[index],
+            isUnlocked: true, // TODO: Vérifier si débloquée avec UserDataService
+          );
         },
-      ),
-    );
-  }
-
-  // Card d'un bouquet
-  Widget _bouquetCard() {
-    return Container(
-      decoration: BoxDecoration(
-        color: AppColors.white,
-        borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: AppColors.sakuraPink, width: 2),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withValues(alpha: 0.1),
-            blurRadius: 4,
-            offset: const Offset(0, 2),
-          ),
-        ],
-      ),
-      child: const Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Icon(Icons.local_florist, size: 60, color: AppColors.sakuraPink),
-            SizedBox(height: 8),
-            Text(
-              'Bouquet',
-              style: TextStyle(
-                fontSize: 16,
-                fontWeight: FontWeight.bold,
-                color: AppColors.darkBlue,
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-
-  // Card d'une fleur
-  Widget _flowerCard() {
-    final List<String> flowers = [
-      'assets/images/sakura.webp',
-      'assets/images/poppy.webp',
-      'assets/images/lily.webp',
-      'assets/images/sunflower.webp',
-    ];
-
-    return Container(
-      decoration: BoxDecoration(
-        color: AppColors.white,
-        borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: AppColors.matchaGreen, width: 2),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withValues(alpha: 0.1),
-            blurRadius: 4,
-            offset: const Offset(0, 2),
-          ),
-        ],
-      ),
-      child: ClipRRect(
-        borderRadius: BorderRadius.circular(12),
-        child: Padding(
-          padding: const EdgeInsets.all(16.0),
-          child: Image.asset(
-            //TODO : mettre les fleurs récoltées
-            flowers[3],
-            fit: BoxFit.contain,
-            errorBuilder: (context, error, stackTrace) {
-              return const Icon(
-                Icons.error_outline,
-                size: 50,
-                color: Colors.red,
-              );
-            },
-          ),
-        ),
       ),
     );
   }
