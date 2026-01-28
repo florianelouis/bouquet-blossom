@@ -164,10 +164,10 @@ packages:
     dependency: "direct main"
     description:
       name: google_fonts
-      sha256: ca1cc501704c47e478f69a667d7f2d882755ddf7baad3f60c3b1256594467022
+      sha256: "6996212014b996eaa17074e02b1b925b212f5e053832d9048970dc27255a8fb3"
       url: "https://pub.dev"
     source: hosted
-    version: "7.0.2"
+    version: "7.1.0"
   http:
     dependency: transitive
     description:
@@ -429,6 +429,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "0.7.6"
+  timer_button:
+    dependency: "direct main"
+    description:
+      name: timer_button
+      sha256: "45f2f9e942fdd131340791e57f21a8451066b22675115729ede6aa56adc41603"
+      url: "https://pub.dev"
+    source: hosted
+    version: "2.3.3"
   typed_data:
     dependency: transitive
     description:

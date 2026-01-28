@@ -12,6 +12,7 @@ dependencies:
   google_fonts: ^7.0.2
   audioplayers: ^6.1.0
   shared_preferences: ^2.3.3
+  timer_button: ^2.3.3
 
 dev_dependencies:
   flutter_test:

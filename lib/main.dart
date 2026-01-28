@@ -8,8 +8,8 @@ import 'services/bouquets_service.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  
-  // Initialiser les services en parallèle
+
+  // Initialisation des services avant de lancer l'application
   try {
     await Future.wait([
       UserDataService().init(),
@@ -19,7 +19,7 @@ void main() async {
   } catch (e) {
     debugPrint('Error initializing services: $e');
   }
-  
+
   runApp(const MainApp());
 }
 
@@ -57,7 +57,6 @@ class _MainAppState extends State<MainApp> {
 
   @override
   Widget build(BuildContext context) {
-
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       title: 'Bouquet Blossom',

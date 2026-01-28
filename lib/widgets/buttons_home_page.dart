@@ -1,9 +1,54 @@
-import 'package:bouquetblossom/constants/app_colors.dart';
 import 'package:flutter/material.dart';
+import 'dart:async';
+import 'package:bouquetblossom/constants/app_colors.dart';
 import 'package:bouquetblossom/widgets/popup_level.dart';
+import 'package:bouquetblossom/services/user_data_service.dart';
 
-class ButtonsHomePage extends StatelessWidget {
+class ButtonsHomePage extends StatefulWidget {
   const ButtonsHomePage({super.key});
+
+  @override
+  State<ButtonsHomePage> createState() => _ButtonsHomePageState();
+}
+
+class _ButtonsHomePageState extends State<ButtonsHomePage> {
+  bool _isWaterButtonEnabled = true;
+  Timer? _waterButtonTimer;
+
+  bool _isFlowerButtonEnabled = true;
+
+  @override
+  void dispose() {
+    _waterButtonTimer?.cancel();
+    super.dispose();
+  }
+
+  Future<void> _onWaterButtonPressed() async {
+    if (!_isWaterButtonEnabled) return;
+    await UserDataService().addFloralCurrency(100);
+
+    debugPrint(
+      "Arrosage effectué ! Nouveau solde : ${UserDataService().getFloralCurrency()}",
+    );
+
+    setState(() {
+      _isWaterButtonEnabled = false;
+    });
+
+    // Timer de 10 secondes avant de réactiver le bouton
+    _waterButtonTimer = Timer(const Duration(seconds: 10), () {
+      if (mounted) {
+        setState(() {
+          _isWaterButtonEnabled = true;
+        });
+      }
+    });
+  }
+
+  void _onFlowerButtonPressed() {
+    if (!_isFlowerButtonEnabled) return;
+    // TODO Action du bouton --> ajouter des fleurs au bouquet
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -15,11 +60,18 @@ class ButtonsHomePage extends StatelessWidget {
           children: [
             ElevatedButton(
               onPressed: () {
-                // TODO afficher cette pop up avant le lancement du jeu (qui se fait dans la pop up directement /widgets/popup_level.dart)
                 showDialog(
-                    context: context,
-                    barrierDismissible: true,
-                    builder: (BuildContext context) => PopupLevel( levelNumber: 1, recompenses: ["1", "/assets/images/lily.webp", "100", "/assets/images/petal.webp"]),
+                  context: context,
+                  barrierDismissible: true,
+                  builder: (BuildContext context) => const PopupLevel(
+                    levelNumber: 1,
+                    recompenses: [
+                      "1",
+                      "assets/images/lily.webp",
+                      "100",
+                      "assets/images/petal.webp",
+                    ],
+                  ),
                 );
               },
               style: ElevatedButton.styleFrom(
@@ -29,10 +81,7 @@ class ButtonsHomePage extends StatelessWidget {
                 ),
                 backgroundColor: AppColors.whitePink,
                 foregroundColor: AppColors.sakuraPink,
-                side: const BorderSide(
-                  color: AppColors.sakuraPink,
-                  width: 2,
-                ),
+                side: const BorderSide(color: AppColors.sakuraPink, width: 2),
                 fixedSize: const Size(300, 60),
               ),
               child: const Text(
@@ -53,9 +102,7 @@ class ButtonsHomePage extends StatelessWidget {
           children: [
             // Bouton Fleurs
             ElevatedButton(
-              onPressed: () {
-                // TODO Action du bouton --> ajouter des fleurs au bouquet
-              },
+              onPressed: _isFlowerButtonEnabled ? _onFlowerButtonPressed : null,
               style: ElevatedButton.styleFrom(
                 padding: const EdgeInsets.symmetric(
                   horizontal: 20,
@@ -63,10 +110,7 @@ class ButtonsHomePage extends StatelessWidget {
                 ),
                 backgroundColor: AppColors.matchaGreen,
                 foregroundColor: AppColors.whitePink,
-                side: const BorderSide(
-                  color: AppColors.white,
-                  width: 2,
-                ),
+                side: const BorderSide(color: AppColors.white, width: 2),
                 fixedSize: const Size(130, 60),
               ),
               child: Row(
@@ -77,8 +121,11 @@ class ButtonsHomePage extends StatelessWidget {
                     width: 30,
                     height: 30,
                     errorBuilder: (context, error, stackTrace) {
-                      debugPrint('Error loading sakura: $error');
-                      return const Icon(Icons.local_florist, size: 30, color: Colors.white);
+                      return const Icon(
+                        Icons.local_florist,
+                        size: 30,
+                        color: Colors.white,
+                      );
                     },
                   ),
                   const SizedBox(width: 8),
@@ -93,20 +140,23 @@ class ButtonsHomePage extends StatelessWidget {
                 ],
               ),
             ),
+
             // Bouton Arrosoir
             ElevatedButton(
-              onPressed: () {
-                // TODO Action du bouton --> arroser les fleurs du bouquet // donne 100 pétales 
-              },
+              onPressed: _isWaterButtonEnabled ? _onWaterButtonPressed : null,
               style: ElevatedButton.styleFrom(
                 padding: const EdgeInsets.symmetric(
                   horizontal: 20,
                   vertical: 8,
                 ),
-                backgroundColor: AppColors.lightSakuraPink,
+                backgroundColor: _isWaterButtonEnabled
+                    ? AppColors.lightSakuraPink
+                    : Colors.grey,
                 foregroundColor: AppColors.whitePink,
-                side: const BorderSide(
-                  color: AppColors.white,
+                side: BorderSide(
+                  color: _isWaterButtonEnabled
+                      ? AppColors.white
+                      : Colors.grey.shade400,
                   width: 2,
                 ),
                 fixedSize: const Size(130, 60),
@@ -119,8 +169,11 @@ class ButtonsHomePage extends StatelessWidget {
                     width: 40,
                     height: 40,
                     errorBuilder: (context, error, stackTrace) {
-                      debugPrint('Error loading water: $error');
-                      return const Icon(Icons.water_drop, size: 40, color: Colors.white);
+                      return const Icon(
+                        Icons.water_drop,
+                        size: 40,
+                        color: Colors.white,
+                      );
                     },
                   ),
                 ],
