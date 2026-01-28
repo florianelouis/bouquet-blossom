@@ -381,7 +381,7 @@ class _GameState extends State<Game> {
   Widget build(BuildContext context) {
     return Scaffold(
       // Widget séparé pour l'app bar
-      appBar: AppBarLevel(title: "Niveau"),
+      appBar: CustomAppBarLevel(title: "Niveau"),
       body: Container(
         constraints: const BoxConstraints.expand(),
         // Use a background image from assets
@@ -416,11 +416,7 @@ class _GameState extends State<Game> {
                       final isDisappearing = disappearingBlocs.contains(
                         blocKey,
                       );
-                      final isDisappearing = disappearingBlocs.contains(
-                        blocKey,
-                      );
-
-                      return AnimatedScale(
+                      return AnimatedScale(   
                         scale: isDisappearing ? 0.0 : (isSwapping ? 0.85 : 1.0),
                         duration: Duration(
                           milliseconds: isDisappearing ? 300 : 350,
@@ -428,19 +424,7 @@ class _GameState extends State<Game> {
                         curve: isSwapping
                             ? Curves.elasticOut
                             : Curves.easeInOut,
-                        duration: Duration(
-                          milliseconds: isDisappearing ? 300 : 350,
-                        ),
-                        curve: isSwapping
-                            ? Curves.elasticOut
-                            : Curves.easeInOut,
                         child: AnimatedOpacity(
-                          opacity: isDisappearing
-                              ? 0.0
-                              : (isSwapping ? 0.6 : 1.0),
-                          duration: Duration(
-                            milliseconds: isDisappearing ? 300 : 350,
-                          ),
                           opacity: isDisappearing
                               ? 0.0
                               : (isSwapping ? 0.6 : 1.0),
@@ -462,7 +446,7 @@ class _GameState extends State<Game> {
                               onPanEnd: (details) =>
                                   onDragEnd(row, col, details),
                               child: FlowerBloc(
-                                type: grid[row][col],
+                                flowerId: grid[row][col],
                                 onTap: null,
                               ),
                             ),
@@ -475,7 +459,6 @@ class _GameState extends State<Game> {
                 const SizedBox(height: 20),
                 // Affichage du score
                 Text(
-                  '$currentScore',
                   '$currentScore',
                   style: const TextStyle(
                     fontSize: 48,
