@@ -34,13 +34,16 @@ migrate_working_dir/
 /build/
 /coverage/
 
-# Generated plugin files (ne pas versionner)
+# Generated plugin files
 **/generated_plugin_registrant.cc
 **/generated_plugin_registrant.h
 **/GeneratedPluginRegistrant.swift
 **/GeneratedPluginRegistrant.m
 **/generated_plugins.cmake
 **/ephemeral/
+
+# Fichiers temporaires ou rapports
+problems-report.html
 
 # Symbolication related
 app.*.symbols

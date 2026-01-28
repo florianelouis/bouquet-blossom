@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 // Service pour gérer les données de l'utilisateur
@@ -16,13 +17,42 @@ class UserDataService {
   static const String _keyBestScores = 'best_scores';
   static const String _keyTutorialCompleted = 'tutorial_completed';
 
-  // Initialiser SharedPreferences
+  final ValueNotifier<int> floralCurrencyNotifier = ValueNotifier(0);
+
   Future<void> init() async {
     _prefs ??= await SharedPreferences.getInstance();
+    floralCurrencyNotifier.value = getFloralCurrency();
+  }
+
+  // MONNAIE FLORALE
+
+  int getFloralCurrency() {
+    return _prefs?.getInt(_keyFloralCurrency) ?? 0;
+  }
+
+  Future<void> setFloralCurrency(int amount) async {
+    await _prefs?.setInt(_keyFloralCurrency, amount);
+    floralCurrencyNotifier.value = amount; // Met à jour l'affichage
+  }
+
+  // Ajouter les pétales gagnés
+  Future<void> addFloralCurrency(int amount) async {
+    final current = getFloralCurrency();
+    await setFloralCurrency(current + amount);
+  }
+
+  // Retirer de la monnaie florale
+  Future<bool> removeFloralCurrency(int amount) async {
+    final current = getFloralCurrency();
+    if (current >= amount) {
+      await setFloralCurrency(current - amount);
+      return true;
+    }
+    return false;
   }
 
   // NIVEAU ACTUEL
-  
+
   // Récupérer le niveau actuel
   int getCurrentLevel() {
     return _prefs?.getInt(_keyCurrentLevel) ?? 1;
@@ -39,36 +69,8 @@ class UserDataService {
     await setCurrentLevel(currentLevel + 1);
   }
 
-  // MONNAIE FLORALE
-  
-  // Récupérer la monnaie florale
-  int getFloralCurrency() {
-    return _prefs?.getInt(_keyFloralCurrency) ?? 0;
-  }
-
-  // Définir la monnaie florale
-  Future<void> setFloralCurrency(int amount) async {
-    await _prefs?.setInt(_keyFloralCurrency, amount);
-  }
-
-  // Ajouter de la monnaie florale
-  Future<void> addFloralCurrency(int amount) async {
-    final current = getFloralCurrency();
-    await setFloralCurrency(current + amount);
-  }
-
-  // Retirer de la monnaie florale
-  Future<bool> removeFloralCurrency(int amount) async {
-    final current = getFloralCurrency();
-    if (current >= amount) {
-      await setFloralCurrency(current - amount);
-      return true;
-    }
-    return false;
-  }
-
   // BOUQUETS DÉBLOQUÉS
-  
+
   // Récupérer la liste des bouquets débloqués (IDs)
   List<String> getUnlockedBouquets() {
     return _prefs?.getStringList(_keyUnlockedBouquets) ?? [];
@@ -83,13 +85,13 @@ class UserDataService {
     }
   }
 
-  // Vérifier si un bouquet est débloqué
+  // On vérifie si un bouquet est débloqué
   bool isBouquetUnlocked(String bouquetId) {
     return getUnlockedBouquets().contains(bouquetId);
   }
 
   // NIVEAUX COMPLÉTÉS
-  
+
   // Récupérer la liste des niveaux complétés
   List<String> getCompletedLevels() {
     return _prefs?.getStringList(_keyCompletedLevels) ?? [];
@@ -104,18 +106,18 @@ class UserDataService {
     }
   }
 
-  // Vérifier si un niveau est complété
+  // On vérifie si un niveau est complété
   bool isLevelCompleted(String levelId) {
     return getCompletedLevels().contains(levelId);
   }
 
   // MEILLEURS SCORES
-  
+
   // Récupérer le meilleur score d'un niveau
   int getBestScore(String levelId) {
     final scores = _prefs?.getString(_keyBestScores);
     if (scores == null) return 0;
-    
+
     final scoresMap = Map<String, int>.from(
       scores.split(',').fold<Map<String, int>>({}, (map, entry) {
         final parts = entry.split(':');
@@ -123,9 +125,9 @@ class UserDataService {
           map[parts[0]] = int.tryParse(parts[1]) ?? 0;
         }
         return map;
-      })
+      }),
     );
-    
+
     return scoresMap[levelId] ?? 0;
   }
 
@@ -135,24 +137,28 @@ class UserDataService {
     if (score > currentBest) {
       final scores = _prefs?.getString(_keyBestScores) ?? '';
       final scoresMap = Map<String, int>.from(
-        scores.isEmpty ? {} : scores.split(',').fold<Map<String, int>>({}, (map, entry) {
-          final parts = entry.split(':');
-          if (parts.length == 2) {
-            map[parts[0]] = int.tryParse(parts[1]) ?? 0;
-          }
-          return map;
-        })
+        scores.isEmpty
+            ? {}
+            : scores.split(',').fold<Map<String, int>>({}, (map, entry) {
+                final parts = entry.split(':');
+                if (parts.length == 2) {
+                  map[parts[0]] = int.tryParse(parts[1]) ?? 0;
+                }
+                return map;
+              }),
       );
-      
+
       scoresMap[levelId] = score;
-      final newScores = scoresMap.entries.map((e) => '${e.key}:${e.value}').join(',');
+      final newScores = scoresMap.entries
+          .map((e) => '${e.key}:${e.value}')
+          .join(',');
       await _prefs?.setString(_keyBestScores, newScores);
     }
   }
 
   // TUTORIEL
-  
-  // Vérifier si le tutoriel a été complété
+
+  // On vérifie si le tutoriel a été complété
   bool isTutorialCompleted() {
     return _prefs?.getBool(_keyTutorialCompleted) ?? false;
   }
@@ -163,10 +169,11 @@ class UserDataService {
   }
 
   // RÉINITIALISATION
-  
+
   // Réinitialiser toutes les données de l'utilisateur
   Future<void> resetAllData() async {
     await _prefs?.clear();
+    floralCurrencyNotifier.value = 0; // Remise à zéro visuelle
   }
 
   // Réinitialiser uniquement la progression
