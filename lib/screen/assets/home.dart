@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:bouquetblossom/constants/app_colors.dart';
 import 'package:bouquetblossom/widgets/popup_tuto.dart';
 import 'package:bouquetblossom/widgets/popup_level.dart';
+import 'package:bouquetblossom/services/user_data_service.dart';
 
 class AssetsHome extends StatefulWidget {
   const AssetsHome({super.key});
@@ -13,7 +14,25 @@ class AssetsHome extends StatefulWidget {
 class _AssetsHomeState extends State<AssetsHome> {
   bool _isFirstWaterClick = true;
   bool _isFirstBouquetClick = true;
-  // bool _isLevelClick = true;
+
+  final UserDataService _userDataService = UserDataService();
+  int _currentLevel = 1;
+
+  @override
+  void initState() {
+    super.initState();
+    // 2. Charger les données au démarrage
+    _loadProgress();
+  }
+
+  Future<void> _loadProgress() async {
+    await _userDataService.init();
+    if (mounted) {
+      setState(() {
+        _currentLevel = _userDataService.getCurrentLevel();
+      });
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -57,22 +76,15 @@ class _AssetsHomeState extends State<AssetsHome> {
               children: [
                 ElevatedButton(
                   onPressed: () async {
-                      await showDialog(
-                        context: context,
-                        builder: (BuildContext context) => const PopupLevel(
-                          levelNumber: 1,
-                          recompenses: [
-                            "1",
-                            "assets/images/lily.webp",
-                            "100",
-                            "assets/images/petal.webp",
-                          ],
-                        ),
-                      );
-                      setState(() {
-                        //_isLevelClick = false;
-                      });
-                    },
+                    await showDialog(
+                      context: context,
+                      builder: (BuildContext context) =>
+                          PopupLevel(levelNumber: _currentLevel),
+                    );
+                    setState(() {
+                      //_isLevelClick = false;
+                    });
+                  },
                   style: ElevatedButton.styleFrom(
                     padding: const EdgeInsets.symmetric(
                       horizontal: 40,
@@ -147,7 +159,11 @@ class _AssetsHomeState extends State<AssetsHome> {
                             cacheWidth: 100,
                             errorBuilder: (context, error, stackTrace) {
                               debugPrint('Error loading sakura: $error');
-                              return const Icon(Icons.local_florist, size: 50, color: AppColors.sakuraPink);
+                              return const Icon(
+                                Icons.local_florist,
+                                size: 50,
+                                color: AppColors.sakuraPink,
+                              );
                             },
                           ),
                           const Text(
@@ -209,7 +225,11 @@ class _AssetsHomeState extends State<AssetsHome> {
                             cacheWidth: 160,
                             errorBuilder: (context, error, stackTrace) {
                               debugPrint('Error loading water: $error');
-                              return const Icon(Icons.water_drop, size: 80, color: AppColors.lightSakuraPink);
+                              return const Icon(
+                                Icons.water_drop,
+                                size: 80,
+                                color: AppColors.lightSakuraPink,
+                              );
                             },
                           ),
                           const SizedBox(width: 8),
