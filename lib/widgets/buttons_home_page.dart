@@ -34,6 +34,7 @@ class _ButtonsHomePageState extends State<ButtonsHomePage> {
     if (mounted) {
       setState(() {
         _currentLevel = _userDataService.getCurrentLevel();
+        if (_currentLevel < 1) _currentLevel = 1;
         _floralCurrency = _userDataService.getFloralCurrency();
 
         // Compter le nombre total de fleurs débloquées
@@ -55,17 +56,12 @@ class _ButtonsHomePageState extends State<ButtonsHomePage> {
 
     if (mounted) {
       setState(() {
+        int current = _userDataService.getCurrentLevel();
+        _currentLevel = current > 1 ? current - 1 : 1;
         _floralCurrency = _userDataService.getFloralCurrency();
+        _flowerCount = _userDataService.getUnlockedBouquets().length;
+        _isLoading = false;
       });
-
-      // Afficher un message de succès
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Vous avez gagné 100 pétales ! 🌸'),
-          backgroundColor: Colors.green,
-          duration: Duration(seconds: 2),
-        ),
-      );
     }
   }
 
