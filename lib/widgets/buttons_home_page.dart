@@ -1,6 +1,5 @@
-import 'package:flutter/material.dart';
-import 'dart:async';
 import 'package:bouquetblossom/constants/app_colors.dart';
+import 'package:flutter/material.dart';
 import 'package:bouquetblossom/widgets/popup_level.dart';
 import 'package:bouquetblossom/services/user_data_service.dart';
 import 'package:bouquetblossom/services/levels_service.dart';
@@ -219,9 +218,7 @@ class _ButtonsHomePageState extends State<ButtonsHomePage> {
                   horizontal: 20,
                   vertical: 8,
                 ),
-                backgroundColor: _isWaterButtonEnabled
-                    ? AppColors.lightSakuraPink
-                    : Colors.grey,
+                backgroundColor: AppColors.lightSakuraPink,
                 foregroundColor: AppColors.whitePink,
                 side: const BorderSide(color: AppColors.white, width: 2),
                 fixedSize: const Size(130, 60),
