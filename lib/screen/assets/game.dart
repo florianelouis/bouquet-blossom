@@ -7,10 +7,12 @@ import 'package:bouquetblossom/services/user_data_service.dart';
 
 class Game extends StatefulWidget {
   final LevelConfig levelConfig;
+  final int extraMoves; // Mouvements bonus achetés
 
   const Game({
     super.key,
     required this.levelConfig,
+    this.extraMoves = 0, // Par défaut 0
   });
 
   @override
@@ -20,45 +22,26 @@ class Game extends StatefulWidget {
 class _GameState extends State<Game> {
   late final UserDataService _userDataService;
 
-  // Taille de la grille
   final int gridSize = 8;
-
-  // Liste pour stocker les IDs de fleurs dans la grille
   List<List<String>> grid = [];
-
-  // Identifiants uniques pour chaque bloc (pour les animations)
   List<List<UniqueKey>> blocKeys = [];
-
-  // Score du niveau en cours
   int currentScore = 0;
-
-  // Mouvements restants
   int? movesRemaining;
-
-  // Compteur de fleurs collectées
   Map<String, int> collectedFlowers = {};
-
-  // Animation en cours
   bool isAnimating = false;
-
-  // Position de départ du drag
   int? dragStartRow;
   int? dragStartCol;
-
-  // Blocs en cours de swap
   Set<String> swappingBlocs = {};
-
-  // Blocs en cours de suppression
   Set<String> disappearingBlocs = {};
 
   @override
   void initState() {
     super.initState();
     _userDataService = UserDataService();
-    
-    // Initialiser les mouvements
+
+    // Initialiser les mouvements avec les bonus
     if (!widget.levelConfig.hasUnlimitedMoves) {
-      movesRemaining = widget.levelConfig.moves;
+      movesRemaining = widget.levelConfig.moves + widget.extraMoves;
     }
 
     // Initialiser le compteur de fleurs si nécessaire
@@ -138,7 +121,9 @@ class _GameState extends State<Game> {
     await _userDataService.addFloralCurrency(currencyReward);
 
     // Débloquer le bouquet correspondant
-    await _userDataService.unlockBouquet('bouquet_${widget.levelConfig.bouquetId}');
+    await _userDataService.unlockBouquet(
+      'bouquet_${widget.levelConfig.bouquetId}',
+    );
 
     // Passer au niveau suivant si c'est le niveau actuel
     if (_userDataService.getCurrentLevel() == widget.levelConfig.id) {
@@ -353,7 +338,7 @@ class _GameState extends State<Game> {
 
     if (matches.isEmpty) {
       isAnimating = false;
-      
+
       // Vérifier si le niveau est terminé
       if (checkObjectivesCompleted()) {
         _showEndLevelDialog(true);
@@ -413,7 +398,7 @@ class _GameState extends State<Game> {
           processMatches();
         } else {
           isAnimating = false;
-          
+
           // Vérifier si le niveau est terminé
           if (checkObjectivesCompleted()) {
             _showEndLevelDialog(true);
@@ -433,8 +418,18 @@ class _GameState extends State<Game> {
 
     if (!mounted) return;
 
-    // Calculer les récompenses
-    final currencyReward = (currentScore / 100).round();
+    void _continueWithExtraMoves() {
+      Navigator.of(context).pop();
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(
+          builder: (context) => Game(
+            levelConfig: widget.levelConfig,
+            extraMoves: (widget.extraMoves ?? 0) + 5,
+          ),
+        ),
+      );
+    }
 
     showDialog(
       context: context,
@@ -443,14 +438,16 @@ class _GameState extends State<Game> {
         levelNumber: widget.levelConfig.id,
         success: success,
         finalScore: currentScore,
-        recompenses: [
-          "1",
-          "assets/images/lily.webp",
-          currencyReward.toString(),
-          "assets/images/petal.webp",
-        ],
         collectedFlowers: collectedFlowers,
         requiredFlowers: widget.levelConfig.objective.flowers,
+        remainingMoves: movesRemaining,
+        levelConfig: widget.levelConfig,
+        currentGrid: List<List<String>>.from(
+          grid.map((row) => List<String>.from(row)),
+        ),
+        currentScore: currentScore,
+        currentCollectedFlowers: Map<String, int>.from(collectedFlowers),
+        onContinueWithExtraMoves: _continueWithExtraMoves,
       ),
     );
   }
@@ -458,7 +455,14 @@ class _GameState extends State<Game> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: CustomAppBarLevel(title: "Niveau ${widget.levelConfig.id}"),
+      appBar: CustomAppBarLevel(
+        title: "Niveau ${widget.levelConfig.id}",
+        currentScore: currentScore,
+        targetScore: widget.levelConfig.objective.points,
+        movesRemaining: movesRemaining,
+        collectedFlowers: collectedFlowers,
+        requiredFlowers: widget.levelConfig.objective.flowers,
+      ),
       body: Container(
         constraints: const BoxConstraints.expand(),
         decoration: const BoxDecoration(
@@ -473,10 +477,6 @@ class _GameState extends State<Game> {
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                // Affichage des objectifs et mouvements
-                _buildObjectivesDisplay(),
-                const SizedBox(height: 10),
-                
                 // Grille de jeu
                 AspectRatio(
                   aspectRatio: 1,
@@ -493,16 +493,22 @@ class _GameState extends State<Game> {
                       final col = index % gridSize;
                       final blocKey = '$row,$col';
                       final isSwapping = swappingBlocs.contains(blocKey);
-                      final isDisappearing = disappearingBlocs.contains(blocKey);
-                      
+                      final isDisappearing = disappearingBlocs.contains(
+                        blocKey,
+                      );
+
                       return AnimatedScale(
                         scale: isDisappearing ? 0.0 : (isSwapping ? 0.85 : 1.0),
                         duration: Duration(
                           milliseconds: isDisappearing ? 300 : 350,
                         ),
-                        curve: isSwapping ? Curves.elasticOut : Curves.easeInOut,
+                        curve: isSwapping
+                            ? Curves.elasticOut
+                            : Curves.easeInOut,
                         child: AnimatedOpacity(
-                          opacity: isDisappearing ? 0.0 : (isSwapping ? 0.6 : 1.0),
+                          opacity: isDisappearing
+                              ? 0.0
+                              : (isSwapping ? 0.6 : 1.0),
                           duration: Duration(
                             milliseconds: isDisappearing ? 300 : 350,
                           ),
@@ -518,7 +524,8 @@ class _GameState extends State<Game> {
                             child: GestureDetector(
                               key: blocKeys[row][col],
                               onPanStart: (_) => onDragStart(row, col),
-                              onPanEnd: (details) => onDragEnd(row, col, details),
+                              onPanEnd: (details) =>
+                                  onDragEnd(row, col, details),
                               child: FlowerBloc(
                                 flowerId: grid[row][col],
                                 onTap: null,
@@ -531,7 +538,7 @@ class _GameState extends State<Game> {
                   ),
                 ),
                 const SizedBox(height: 20),
-                
+
                 // Affichage du score
                 Text(
                   '$currentScore',
@@ -553,68 +560,6 @@ class _GameState extends State<Game> {
             ),
           ),
         ),
-      ),
-    );
-  }
-
-  Widget _buildObjectivesDisplay() {
-    return Container(
-      padding: const EdgeInsets.all(12),
-      decoration: BoxDecoration(
-        color: Colors.black45,
-        borderRadius: BorderRadius.circular(12),
-      ),
-      child: Column(
-        children: [
-          // Mouvements restants
-          if (movesRemaining != null)
-            Text(
-              'Coups: $movesRemaining',
-              style: const TextStyle(
-                fontSize: 20,
-                fontWeight: FontWeight.bold,
-                color: Colors.white,
-              ),
-            ),
-          
-          // Objectif de points
-          Text(
-            'Objectif: ${widget.levelConfig.objective.points}',
-            style: const TextStyle(
-              fontSize: 18,
-              color: Colors.white,
-            ),
-          ),
-          
-          // Objectifs de fleurs
-          if (widget.levelConfig.hasFlowerObjectives) ...[
-            const SizedBox(height: 8),
-            Wrap(
-              spacing: 12,
-              runSpacing: 8,
-              children: widget.levelConfig.objective.flowers!.entries.map((entry) {
-                final collected = collectedFlowers[entry.key] ?? 0;
-                final required = entry.value;
-                final isComplete = collected >= required;
-                
-                return Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-                  decoration: BoxDecoration(
-                    color: isComplete ? Colors.green : Colors.white24,
-                    borderRadius: BorderRadius.circular(8),
-                  ),
-                  child: Text(
-                    '${entry.key}: $collected/$required',
-                    style: const TextStyle(
-                      fontSize: 14,
-                      color: Colors.white,
-                    ),
-                  ),
-                );
-              }).toList(),
-            ),
-          ],
-        ],
       ),
     );
   }
