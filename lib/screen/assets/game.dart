@@ -1,51 +1,62 @@
 import 'package:flutter/material.dart';
 import 'package:bouquetblossom/widgets/flower_bloc.dart';
-
-import 'package:bouquetblossom/widgets/app_bar.dart';
+import 'package:bouquetblossom/widgets/app_bar_level.dart';
+import 'package:bouquetblossom/widgets/popup_end_level.dart';
+import 'package:bouquetblossom/services/levels_service.dart';
+import 'package:bouquetblossom/services/user_data_service.dart';
 
 class Game extends StatefulWidget {
-  const Game({super.key});
+  final LevelConfig levelConfig;
+  final int extraMoves; // Mouvements bonus achetés
+
+  const Game({
+    super.key,
+    required this.levelConfig,
+    this.extraMoves = 0, // Par défaut 0
+  });
 
   @override
   State<Game> createState() => _GameState();
 }
 
 class _GameState extends State<Game> {
-  // Taille de la grille
+  late final UserDataService _userDataService;
+
   final int gridSize = 8;
-
-  // Liste pour stocker les IDs de fleurs dans la grille
   List<List<String>> grid = [];
-
-  // Identifiants uniques pour chaque bloc (pour les animations)
   List<List<UniqueKey>> blocKeys = [];
-
-  // Score du niveau en cours
   int currentScore = 0;
-
-  // Animation en cours
+  int? movesRemaining;
+  Map<String, int> collectedFlowers = {};
   bool isAnimating = false;
-
-  // Position de départ du drag
   int? dragStartRow;
   int? dragStartCol;
-
-  // Blocs en cours de swap
   Set<String> swappingBlocs = {};
-
-  // Blocs en cours de suppression
   Set<String> disappearingBlocs = {};
 
   @override
   void initState() {
     super.initState();
+    _userDataService = UserDataService();
+
+    // Initialiser les mouvements avec les bonus
+    if (!widget.levelConfig.hasUnlimitedMoves) {
+      movesRemaining = widget.levelConfig.moves + widget.extraMoves;
+    }
+
+    // Initialiser le compteur de fleurs si nécessaire
+    if (widget.levelConfig.hasFlowerObjectives) {
+      widget.levelConfig.objective.flowers!.forEach((flower, _) {
+        collectedFlowers[flower] = 0;
+      });
+    }
+
     // Initialiser la grille avec des fleurs aléatoires
     initializeGrid();
   }
 
   // Initialiser la grille avec des fleurs aléatoires
   void initializeGrid() {
-    // Générer la grille initiale
     grid = List.generate(
       gridSize,
       (row) => List.generate(gridSize, (col) => FlowerBloc.randomFlowerId()),
@@ -55,23 +66,75 @@ class _GameState extends State<Game> {
       (row) => List.generate(gridSize, (col) => UniqueKey()),
     );
 
-    // Supprimer les matches initiaux jusqu'à ce qu'il n'y en ait plus --> match = 3 mêmes fleurs ou plus alignées
+    // Supprimer les matches initiaux
     while (findAllMatches().isNotEmpty) {
       final matches = findAllMatches();
       for (final match in matches) {
         final parts = match.split(',');
         final row = int.parse(parts[0]);
         final col = int.parse(parts[1]);
-        // Remplacer les matches par de nouvelles fleurs
         grid[row][col] = FlowerBloc.randomFlowerId();
       }
     }
     currentScore = 0;
   }
 
+  // Vérifier si les objectifs sont atteints
+  bool checkObjectivesCompleted() {
+    // Vérifier les points
+    if (currentScore < widget.levelConfig.objective.points) {
+      return false;
+    }
+
+    // Vérifier les fleurs si nécessaire
+    if (widget.levelConfig.hasFlowerObjectives) {
+      for (var entry in widget.levelConfig.objective.flowers!.entries) {
+        if ((collectedFlowers[entry.key] ?? 0) < entry.value) {
+          return false;
+        }
+      }
+    }
+
+    return true;
+  }
+
+  // Vérifier si le joueur a perdu (plus de mouvements)
+  bool checkGameOver() {
+    if (movesRemaining != null && movesRemaining! <= 0) {
+      return !checkObjectivesCompleted();
+    }
+    return false;
+  }
+
+  // Sauvegarder la progression et donner les récompenses
+  Future<void> _completeLevel() async {
+    final levelId = 'level_${widget.levelConfig.id}';
+
+    // Marquer le niveau comme complété
+    await _userDataService.completeLevel(levelId);
+
+    // Enregistrer le meilleur score
+    await _userDataService.setBestScore(levelId, currentScore);
+
+    // Calculer les récompenses (par exemple, proportionnelles au score)
+    final currencyReward = (currentScore / 100).round();
+    await _userDataService.addFloralCurrency(currencyReward);
+
+    // Débloquer le bouquet correspondant
+    await _userDataService.unlockBouquet(
+      'bouquet_${widget.levelConfig.bouquetId}',
+    );
+
+    // Passer au niveau suivant si c'est le niveau actuel
+    if (_userDataService.getCurrentLevel() == widget.levelConfig.id) {
+      await _userDataService.nextLevel();
+    }
+  }
+
   // Gérer le début du déplacement
   void onDragStart(int row, int col) {
     if (isAnimating) return;
+    if (checkGameOver()) return;
     dragStartRow = row;
     dragStartCol = col;
   }
@@ -79,6 +142,7 @@ class _GameState extends State<Game> {
   // Gérer la fin du déplacement
   void onDragEnd(int row, int col, DragEndDetails details) {
     if (isAnimating || dragStartRow == null || dragStartCol == null) return;
+    if (checkGameOver()) return;
 
     // Calculer la direction du déplacement
     final dx = details.velocity.pixelsPerSecond.dx;
@@ -89,18 +153,16 @@ class _GameState extends State<Game> {
 
     // Déterminer la direction dominante
     if (dx.abs() > dy.abs()) {
-      // Mouvement horizontal
       if (dx > 0 && targetCol < gridSize - 1) {
-        targetCol++; // Droite
+        targetCol++;
       } else if (dx < 0 && targetCol > 0) {
-        targetCol--; // Gauche
+        targetCol--;
       }
     } else {
-      // Mouvement vertical
       if (dy > 0 && targetRow < gridSize - 1) {
-        targetRow++; // Bas
+        targetRow++;
       } else if (dy < 0 && targetRow > 0) {
-        targetRow--; // Haut
+        targetRow--;
       }
     }
 
@@ -113,17 +175,10 @@ class _GameState extends State<Game> {
     dragStartCol = null;
   }
 
-  // Vérifier si deux blocs sont adjacents
-  bool isAdjacent(int row1, int col1, int row2, int col2) {
-    return (row1 == row2 && (col1 - col2).abs() == 1) ||
-        (col1 == col2 && (row1 - row2).abs() == 1);
-  }
-
   // Échanger deux blocs
   void swapBlocs(int row1, int col1, int row2, int col2) {
     isAnimating = true;
 
-    // Marquer les blocs comme étant en swap
     setState(() {
       swappingBlocs.add('$row1,$col1');
       swappingBlocs.add('$row2,$col2');
@@ -131,19 +186,16 @@ class _GameState extends State<Game> {
 
     Future.delayed(const Duration(milliseconds: 50), () {
       setState(() {
-        // Échanger les types
         final temp = grid[row1][col1];
         grid[row1][col1] = grid[row2][col2];
         grid[row2][col2] = temp;
 
-        // Échanger les clés
         final tempKey = blocKeys[row1][col1];
         blocKeys[row1][col1] = blocKeys[row2][col2];
         blocKeys[row2][col2] = tempKey;
       });
     });
 
-    // Vérifier s'il y a des matches après l'échange
     Future.delayed(const Duration(milliseconds: 400), () {
       setState(() {
         swappingBlocs.clear();
@@ -175,6 +227,12 @@ class _GameState extends State<Game> {
           isAnimating = false;
         });
       } else {
+        // Décrémenter les mouvements seulement si le swap est valide
+        if (movesRemaining != null) {
+          setState(() {
+            movesRemaining = movesRemaining! - 1;
+          });
+        }
         processMatches();
       }
     });
@@ -186,11 +244,9 @@ class _GameState extends State<Game> {
 
     // Vérifier horizontalement
     int countHorizontal = 1;
-    // Compter à gauche
     for (int c = col - 1; c >= 0 && grid[row][c] == flowerId; c--) {
       countHorizontal++;
     }
-    // Compter à droite
     for (int c = col + 1; c < gridSize && grid[row][c] == flowerId; c++) {
       countHorizontal++;
     }
@@ -198,11 +254,9 @@ class _GameState extends State<Game> {
 
     // Vérifier verticalement
     int countVertical = 1;
-    // Compter en haut
     for (int r = row - 1; r >= 0 && grid[r][col] == flowerId; r--) {
       countVertical++;
     }
-    // Compter en bas
     for (int r = row + 1; r < gridSize && grid[r][col] == flowerId; r++) {
       countVertical++;
     }
@@ -214,8 +268,8 @@ class _GameState extends State<Game> {
   // Trouver tous les matches dans la grille
   Set<String> findAllMatches() {
     Set<String> matches = {};
+    Map<String, int> tempFlowerCount = {};
 
-    // Vérifier toutes les positions
     for (int row = 0; row < gridSize; row++) {
       for (int col = 0; col < gridSize; col++) {
         final flowerId = grid[row][col];
@@ -225,23 +279,22 @@ class _GameState extends State<Game> {
         for (int c = col + 1; c < gridSize && grid[row][c] == flowerId; c++) {
           countH++;
         }
-        if (countH >= 5) {
-          for (int c = col; c < col + countH; c++) {
-            matches.add('$row,$c');
-          }
-          currentScore = currentScore + 500;
-        }
-        if (countH >= 4) {
-          for (int c = col; c < col + countH; c++) {
-            matches.add('$row,$c');
-          }
-          currentScore = currentScore + 250;
-        }
         if (countH >= 3) {
           for (int c = col; c < col + countH; c++) {
-            matches.add('$row,$c');
+            final pos = '$row,$c';
+            if (!matches.contains(pos)) {
+              matches.add(pos);
+              tempFlowerCount[flowerId] = (tempFlowerCount[flowerId] ?? 0) + 1;
+            }
           }
-          currentScore = currentScore + 100;
+          // Points bonus
+          if (countH >= 5) {
+            currentScore += 500;
+          } else if (countH >= 4) {
+            currentScore += 250;
+          } else {
+            currentScore += 100;
+          }
         }
 
         // Vérifier verticalement
@@ -249,26 +302,32 @@ class _GameState extends State<Game> {
         for (int r = row + 1; r < gridSize && grid[r][col] == flowerId; r++) {
           countV++;
         }
-        if (countV >= 5) {
-          for (int r = row; r < row + countV; r++) {
-            matches.add('$r,$col');
-          }
-          currentScore = currentScore + 500;
-        }
-        if (countV >= 4) {
-          for (int r = row; r < row + countV; r++) {
-            matches.add('$r,$col');
-          }
-          currentScore = currentScore + 250;
-        }
         if (countV >= 3) {
           for (int r = row; r < row + countV; r++) {
-            matches.add('$r,$col');
+            final pos = '$r,$col';
+            if (!matches.contains(pos)) {
+              matches.add(pos);
+              tempFlowerCount[flowerId] = (tempFlowerCount[flowerId] ?? 0) + 1;
+            }
           }
-          currentScore = currentScore + 100;
+          // Points bonus
+          if (countV >= 5) {
+            currentScore += 500;
+          } else if (countV >= 4) {
+            currentScore += 250;
+          } else {
+            currentScore += 100;
+          }
         }
       }
     }
+
+    // Mettre à jour le compteur de fleurs collectées
+    tempFlowerCount.forEach((flower, count) {
+      if (collectedFlowers.containsKey(flower)) {
+        collectedFlowers[flower] = (collectedFlowers[flower] ?? 0) + count;
+      }
+    });
 
     return matches;
   }
@@ -279,18 +338,22 @@ class _GameState extends State<Game> {
 
     if (matches.isEmpty) {
       isAnimating = false;
+
+      // Vérifier si le niveau est terminé
+      if (checkObjectivesCompleted()) {
+        _showEndLevelDialog(true);
+      } else if (checkGameOver()) {
+        _showEndLevelDialog(false);
+      }
       return;
     }
 
-    // Marquer les blocs comme disparaissant
     setState(() {
       disappearingBlocs = matches;
     });
 
-    // Attendre que l'animation de disparition se termine
     Future.delayed(const Duration(milliseconds: 300), () {
       setState(() {
-        // Supprimer les matches (marquer comme vides)
         List<List<String?>> tempGrid = List.generate(
           gridSize,
           (row) => List.generate(gridSize, (col) => grid[row][col]),
@@ -305,9 +368,7 @@ class _GameState extends State<Game> {
 
         disappearingBlocs.clear();
 
-        // Faire tomber les blocs
         for (int col = 0; col < gridSize; col++) {
-          // Collecter tous les blocs non-null et leurs clés de la colonne (de bas en haut)
           List<String> nonEmptyBlocs = [];
           List<UniqueKey> nonEmptyKeys = [];
 
@@ -318,7 +379,6 @@ class _GameState extends State<Game> {
             }
           }
 
-          // Remplir la colonne de bas en haut
           int blocIndex = 0;
           for (int row = gridSize - 1; row >= 0; row--) {
             if (blocIndex < nonEmptyBlocs.length) {
@@ -326,7 +386,6 @@ class _GameState extends State<Game> {
               blocKeys[row][col] = nonEmptyKeys[blocIndex];
               blocIndex++;
             } else {
-              // Générer de nouveaux blocs en haut
               grid[row][col] = FlowerBloc.randomFlowerId();
               blocKeys[row][col] = UniqueKey();
             }
@@ -334,25 +393,78 @@ class _GameState extends State<Game> {
         }
       });
 
-      // Vérifier récursivement s'il y a d'autres matches
       Future.delayed(const Duration(milliseconds: 500), () {
         if (findAllMatches().isNotEmpty) {
           processMatches();
         } else {
           isAnimating = false;
+
+          // Vérifier si le niveau est terminé
+          if (checkObjectivesCompleted()) {
+            _showEndLevelDialog(true);
+          } else if (checkGameOver()) {
+            _showEndLevelDialog(false);
+          }
         }
       });
     });
   }
 
+  // Afficher le dialogue de fin de niveau
+  void _showEndLevelDialog(bool success) async {
+    if (success) {
+      await _completeLevel();
+    }
+
+    if (!mounted) return;
+
+    void _continueWithExtraMoves() {
+      Navigator.of(context).pop();
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(
+          builder: (context) => Game(
+            levelConfig: widget.levelConfig,
+            extraMoves: (widget.extraMoves ?? 0) + 5,
+          ),
+        ),
+      );
+    }
+
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (BuildContext context) => PopupEndLevel(
+        levelNumber: widget.levelConfig.id,
+        success: success,
+        finalScore: currentScore,
+        collectedFlowers: collectedFlowers,
+        requiredFlowers: widget.levelConfig.objective.flowers,
+        remainingMoves: movesRemaining,
+        levelConfig: widget.levelConfig,
+        currentGrid: List<List<String>>.from(
+          grid.map((row) => List<String>.from(row)),
+        ),
+        currentScore: currentScore,
+        currentCollectedFlowers: Map<String, int>.from(collectedFlowers),
+        onContinueWithExtraMoves: _continueWithExtraMoves,
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      // Widget séparé pour l'app bar
-      appBar: CustomAppBar(title: "Niveau 1"),
+      appBar: CustomAppBarLevel(
+        title: "Niveau ${widget.levelConfig.id}",
+        currentScore: currentScore,
+        targetScore: widget.levelConfig.objective.points,
+        movesRemaining: movesRemaining,
+        collectedFlowers: collectedFlowers,
+        requiredFlowers: widget.levelConfig.objective.flowers,
+      ),
       body: Container(
         constraints: const BoxConstraints.expand(),
-        // Use a background image from assets
         decoration: const BoxDecoration(
           image: DecorationImage(
             image: AssetImage('assets/images/background.webp'),
@@ -426,6 +538,7 @@ class _GameState extends State<Game> {
                   ),
                 ),
                 const SizedBox(height: 20),
+
                 // Affichage du score
                 Text(
                   '$currentScore',
