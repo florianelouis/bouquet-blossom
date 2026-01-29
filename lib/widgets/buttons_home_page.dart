@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'dart:async';
 import 'package:bouquetblossom/constants/app_colors.dart';
 import 'package:bouquetblossom/widgets/popup_level.dart';
+import 'package:bouquetblossom/widgets/popup_tuto.dart';
 import 'package:bouquetblossom/services/user_data_service.dart';
 
 class ButtonsHomePage extends StatefulWidget {
@@ -12,9 +13,11 @@ class ButtonsHomePage extends StatefulWidget {
 }
 
 class _ButtonsHomePageState extends State<ButtonsHomePage> {
+  //  Gestion du bouton Arrosoir
   bool _isWaterButtonEnabled = true;
   Timer? _waterButtonTimer;
 
+  // Gestion du bouton Fleur
   bool _isFlowerButtonEnabled = true;
 
   @override
@@ -24,7 +27,25 @@ class _ButtonsHomePageState extends State<ButtonsHomePage> {
   }
 
   Future<void> _onWaterButtonPressed() async {
+    // TUTORIEL
+    // On vérifie si le tuto est déjà fini via le service
+    if (!UserDataService().isTutorialCompleted()) {
+      // S'il n'est pas fini, on affiche le popup
+      await showDialog(
+        context: context,
+        builder: (BuildContext context) => const PopupTuto(
+          popupTitle: "Arrosez vos fleurs !",
+          popupText:
+              "Clique ici pour arroser tes fleurs et gagner des pétales.",
+        ),
+      );
+      await UserDataService().completeTutorial();
+      return;
+    }
+
     if (!_isWaterButtonEnabled) return;
+
+    // Ajouter 100 pétales
     await UserDataService().addFloralCurrency(100);
 
     debugPrint(
@@ -35,7 +56,7 @@ class _ButtonsHomePageState extends State<ButtonsHomePage> {
       _isWaterButtonEnabled = false;
     });
 
-    // Timer de 10 secondes avant de réactiver le bouton
+    // Lancer le timer de 10 secondes
     _waterButtonTimer = Timer(const Duration(seconds: 10), () {
       if (mounted) {
         setState(() {
@@ -143,7 +164,11 @@ class _ButtonsHomePageState extends State<ButtonsHomePage> {
 
             // Bouton Arrosoir
             ElevatedButton(
-              onPressed: _isWaterButtonEnabled ? _onWaterButtonPressed : null,
+              onPressed:
+                  _isWaterButtonEnabled ||
+                      !UserDataService().isTutorialCompleted()
+                  ? _onWaterButtonPressed
+                  : null,
               style: ElevatedButton.styleFrom(
                 padding: const EdgeInsets.symmetric(
                   horizontal: 20,
